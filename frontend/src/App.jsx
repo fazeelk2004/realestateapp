@@ -9,7 +9,8 @@ import Navbar from './components/Navbar';
 export default function App() {
   return (
     
-    <div data-theme="CustomTheme">
+    <div >
+      <div class="absolute inset-0 -z-10 h-full w-full px-5 py-24 bg-stone-950"/>
       <BrowserRouter>
         <Navbar />
         <Routes>

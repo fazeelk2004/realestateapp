@@ -14,17 +14,17 @@ export default {
     themes: [
       {
         CustomTheme: {
-          "primary": "oklch(35% 0 0)",
+          "primary": "#948979",
           "primary-content": "oklch(100% 0 0)",
-          "secondary": "oklch(35% 0 0)",
+          "secondary": "#DFD0B8",
           "secondary-content": "oklch(100% 0 0)",
-          "accent": "oklch(35% 0 0)",
+          "accent": "#866e63",
           "accent-content": "oklch(100% 0 0)",
-          "neutral": "oklch(35% 0 0)",
+          "neutral": "#9b8074",
           "neutral-content": "oklch(100% 0 0)",
-          "base-100": "oklch(0% 0 0)",
-          "base-200": "oklch(19% 0 0)",
-          "base-300": "oklch(22% 0 0)",
+          "base-100": "#1f140d",
+          "base-200": "#34261e",
+          "base-300": "#48382f",
           "base-content": "oklch(87.609% 0 0)",
           "info": "oklch(45.201% 0.313 264.052)",
           "info-content": "oklch(89.04% 0.062 264.052)",
@@ -47,7 +47,6 @@ export default {
           "--btn-focus-scale": "1",
         }
       },
-      "dark", // keep default dark theme as fallback if you want
     ],
   },
 }
