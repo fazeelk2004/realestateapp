@@ -5,12 +5,13 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
+import { Toaster } from 'react-hot-toast';
 
 export default function App() {
   return (
-    
-    <div >
-      <div class="absolute inset-0 -z-10 h-full w-full px-5 py-24 bg-stone-950"/>
+    <div>
+      <Toaster />
+      <div className="absolute inset-0 -z-10 h-full w-full px-5 py-24 bg-stone-950"/>
       <BrowserRouter>
         <Navbar />
         <Routes>

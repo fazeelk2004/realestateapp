@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import userRouter from './routes/user.route.js';
 import authRouter from './routes/auth.route.js';
 
@@ -13,6 +14,10 @@ mongoose.connect(process.env.MONGO).then(() => {                      // CONNECT
 });
 
 const app = express();                                                // CREATING AN EXPRESS APPLICATION
+
+app.use(cors({
+  origin: "http://localhost:5173",
+}));
 
 app.use(express.json());                                              //MIDDLEWARE TO PARSE JSON REQUEST BODIES
 
