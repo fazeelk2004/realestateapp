@@ -3,12 +3,16 @@ import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import api from "../lib/axios";
 import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
+
 
 export default function SignUp() {
 
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
+  const { loading } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -19,7 +23,6 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     if (!formData.email && !formData.password) {
       toast.error("Please Fill All Fields");
       return;
@@ -38,22 +41,28 @@ export default function SignUp() {
     }
 
     try {
-      await api.post("/auth/signin", {
+      dispatch(signInStart());
+      const res = await api.post("/auth/signin", {
         email: formData.email,
         password: formData.password
       });
+      const data = res.data;
+      if (data.success === false) {
+        dispatch(signInFailure(data.message));
+        return;
+      }
+      dispatch(signInSuccess(data));
       toast.success("Successfully Logged In");
       navigate("/");
     } catch (error) {
-      // HANDLE SPECIFIC ERROR MESSAGES FROM BACKEND
       if (error.response && error.response.data && error.response.data.message) {
+        dispatch(signInFailure(error.response.data.message));
         toast.error(error.response.data.message);
       } else {
-        toast.error("Failed To Create User");
+        dispatch(signInFailure(error.message));
+        toast.error("Sign In Failed");
       }
-      console.log("Error Creating User:", error.message);
-    } finally {
-      setLoading(false);
+      console.log("Error Signing In:", error.message);
     }
   };
 
@@ -68,7 +77,7 @@ export default function SignUp() {
                   <CircleUserRound className="h-6 w-6" />
                   <span className="text-base-content font-extrabold ">Sign In</span>
                 </span>
-                <Link to="/home" className="link font-extralight flex items-center"><ArrowLeft className="w-4 h-4" />Back To Home</Link>
+                <Link to="/" className="link font-extralight flex items-center"><ArrowLeft className="w-4 h-4" />Back To Home</Link>
               </div>
             </div>
           </div>
