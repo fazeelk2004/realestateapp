@@ -1,11 +1,18 @@
 import {useSelector} from 'react-redux';
 import { Outlet, Navigate } from 'react-router';
 
-const PrivateRoute = () => {
+
+
+export const PrivateProfileRoute = () => {
   const {currentUser} = useSelector((state) => state.user);
   return (
     currentUser ? <Outlet /> : <Navigate to="/signin" />
   )
 }
 
-export default PrivateRoute
+export const PrivateSignInUpRoute = () => {
+  const {currentUser} = useSelector((state) => state.user);
+  return (
+    !currentUser ? <Outlet /> : <Navigate to="/" />
+  )
+}
