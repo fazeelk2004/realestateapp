@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import api from "../lib/axios";
 import { toast } from "react-hot-toast";
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
 
@@ -107,6 +108,7 @@ export default function SignUp() {
             <button className="btn btn-accent w-full" onClick={handleSubmit} disabled={loading}>
               {loading ? <span className="loading loading-infinity loading-lg text-secondary"></span> : "SIGN UP"}
             </button> 
+            <OAuth />
           </div>
         </div>
       </div>

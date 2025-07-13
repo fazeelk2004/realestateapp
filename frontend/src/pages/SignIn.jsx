@@ -5,6 +5,7 @@ import api from "../lib/axios";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 
 export default function SignUp() {
@@ -101,6 +102,7 @@ export default function SignUp() {
               {loading ? <span className="loading loading-infinity loading-lg text-secondary"></span> : "SIGN IN"}
             </button>
           </div>
+          <OAuth />
           <div className="divider">OR</div>
           <div className="flex items-center justify-center gap-2">
             <Link to="/signup" className="btn btn-outline btn-accent w-full">

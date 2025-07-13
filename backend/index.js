@@ -7,13 +7,7 @@ import authRouter from './routes/auth.route.js';
 
 dotenv.config();                                                      // LOADING ENVIRONMENT VARIABLES FROM .env FILE 
 
-mongoose.connect(process.env.MONGO).then(() => {                      // CONNECTING TO MONGODB USING MONGOOSE
-  console.log('MongoDB Connected');
-}).catch((err) => {
-  console.error('MongoDB Connection Error:', err);
-});
-
-const app = express();                                                // CREATING AN EXPRESS APPLICATION
+const app = express();                                                // CREATING AN EXPRESS APPLICATION   
 
 app.use(cors({
   origin: "http://localhost:5173",
@@ -21,8 +15,13 @@ app.use(cors({
 
 app.use(express.json());                                              //MIDDLEWARE TO PARSE JSON REQUEST BODIES
 
-app.listen(3000, () => {                                              // STARTING THE SERVER ON PORT 3000
-  console.log('Server Is Running On Port 3000');
+mongoose.connect(process.env.MONGO).then(() => {                      // CONNECTING TO MONGODB USING MONGOOSE
+  console.log('MongoDB Connected');
+    app.listen(3000, () => {                                          // STARTING THE SERVER ON PORT 3000
+    console.log('Server Is Running On Port 3000');
+  });
+}).catch((err) => {
+  console.error('MongoDB Connection Error:', err);
 });
 
 app.use("/api/user", userRouter);                                     // MIDDLEWARE TO HANDLE USER ROUTES
