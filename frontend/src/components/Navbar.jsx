@@ -1,9 +1,11 @@
 import { Menu, Search } from 'lucide-react';
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router'
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const {currentUser} = useSelector((state) => state.user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
 
@@ -49,15 +51,12 @@ const Navbar = () => {
               <Search className="h-5 w-5" />
             </button>
           </div>
-        } 
-        {!isLoggedIn && location.pathname !== "/signin" && <Link to="/signin"><span className='btn btn-primary btn-sm sm:btn-md items-center'>Sign In</span></Link>}
-        {isLoggedIn &&
+        }
+        {currentUser ? (
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                <img src={currentUser.avatar} alt="User Avatar" />
               </div>
             </div>
             <ul
@@ -69,10 +68,10 @@ const Navbar = () => {
                 </Link>
               </li>
               <li><a>Settings</a></li>
-              <li><a onClick={() => setIsLoggedIn(false)}>Logout</a></li>
+              <li><a>Logout</a></li>
             </ul>
           </div>
-        }
+        ) : ( location.pathname !== "/signin" && <Link to="/signin"><span className='btn btn-primary btn-sm sm:btn-md items-center'>Sign In</span></Link> )}
       </div>
 
 
