@@ -1,9 +1,8 @@
-import { ArrowLeft, CircleUserRound, Key, Mail, UserPen, UserPlus } from "lucide-react";
+import { ArrowLeft, CircleUserRound, Key, UserPen, UserPlus } from "lucide-react";
 import { Link } from "react-router";
-import OAuth from "../components/OAuth";
 import { useSelector } from "react-redux";
 
-const Profile = () => {
+const EditProfile = () => {
   const {currentUser} = useSelector((state) => state.user);
   return (
     <div className="flex items-center justify-center mx-5 mt-20 ">
@@ -13,12 +12,12 @@ const Profile = () => {
             <div className="grow">
               <div className="flex items-center gap-2 text-sm font-medium justify-between">
                 <span className="flex items-center gap-2"> 
-                  <CircleUserRound className="h-12 w-12" />
-                  <span className="text-base-content font-extrabold sm:text-2xl">USER PROFILE</span>
+                  <UserPen className="h-12 w-12" />
+                  <span className="text-base-content font-extrabold sm:text-2xl">EDIT PROFILE</span>
                 </span>
-                <Link to="/" className="btn btn-ghost btn-sm">
+                <Link to="/profile" className="btn btn-ghost btn-sm">
                   <ArrowLeft className="h-5 w-5" />
-                  <span className="ml-2">Back to Home</span>
+                  <span className="ml-2">Back to Profile</span>
                 </Link>
               </div>
             </div>
@@ -40,54 +39,50 @@ const Profile = () => {
           </div>
 
 
-          <div className="grid grid-cols-12 gap-4">
-            {/* Username */}
-            <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Username</span>
-              <label className="input input-bordered border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+          <div className="grid grid-cols-12">
+            <div className="flex-col col-span-5 mb-4" >
+              <span className="ms-4">Username</span>
+              <label className="input input-bordered border-accent rounded-full flex max-w-none items-center font-semibold text-lg gap-2 mt-1">
                 <Key className="h-5 w-5" /> 
                 <input disabled className="grow" placeholder={currentUser.username} />
               </label>
             </div>
-            {/* Email */}
-            <div className="col-span-12 sm:col-span-12 md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Email</span>
-              <label className="input input-bordered border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+            <div className="flex-col col-span-5 col-start-8 mb-4" >
+              <span className="ms-4">Email</span>
+              <label className="input input-bordered border-accent rounded-full flex max-w-none items-center font-semibold text-lg gap-2 mt-1">
                 <Key className="h-5 w-5" /> 
                 <input disabled className="grow" placeholder={currentUser.email} />
               </label>
             </div>
-            {/* Gender */}
-            <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Gender</span>
-              <label className="input input-bordered border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+            <div className="flex-col col-span-5 mb-4" >
+              <span className="ms-4">Gender</span>
+              <label className="input input-bordered border-accent rounded-full flex max-w-none items-center font-semibold text-lg gap-2 mt-1">
                 <Key className="h-5 w-5" /> 
                 <input disabled className="grow" placeholder={currentUser.gender} />
               </label>
             </div>
-            {/* Country */}
-            <div className="col-span-12 sm:col-span-12 md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Country</span>
-              <label className="input input-bordered border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+            <div className="flex-col col-span-5 col-start-8 mb-4" >
+              <span className="ms-4">Country</span>
+              <label className="input input-bordered border-accent rounded-full flex max-w-none items-center font-semibold text-lg gap-2 mt-1">
                 <Key className="h-5 w-5" /> 
                 <input disabled className="grow" placeholder={currentUser.country} />
               </label>
-            </div>
-            {/* Phone No. */}
-            <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Phone No.</span>
-              <label className="input input-bordered border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+            </div> 
+            <div className="flex-col col-span-5 mb-4" >
+              <span className="ms-4">Phone No.</span>
+              <label className="input input-bordered border-accent rounded-full flex max-w-none items-center font-semibold text-lg gap-2 mt-1">
                 <Key className="h-5 w-5" /> 
                 <input disabled className="grow" placeholder={currentUser.phoneNo} />
               </label>
             </div>
-            {/* Password */}
-            <div className="col-span-12 sm:col-span-12 md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Password</span>
-              <Link to="/reset-password" className="btn btn-secondary btn-md w-full flex justify-center items-center gap-2">
-                <Key className="h-5 w-5" />
-                <span className="ml-2">Password Reset</span>
-              </Link>
+            <div className="flex-col col-span-5 mb-4 col-start-8" >
+              <span className="ms-4">Password</span>
+              <button className="col-span-5 col-start-8 w-full btn btn-secondary">
+                <Link to="/reset-password" className="btn btn-ghost btn-sm">
+                  <Key className="h-5 w-5" />
+                  <span className="ml-2">Password Reset</span>
+                </Link>
+              </button>
             </div>
           </div>
             
@@ -97,7 +92,7 @@ const Profile = () => {
           
           <div className="flex flex-col items-center justify-center mb-4 p-3 sm:flex-row sm:items-center sm:justify-between gap-5">
             <div className="flex flex-col items-center sm:flex-row sm:items-center gap-5">
-              <span className="text-lg font-semibold">You Have No Listing Yet.</span>
+              <span className="text-lg font-semibold">You Have No Listings Yet.</span>
             </div>
             <Link to="/create-listing" className="btn btn-primary btn-sm sm:btn-md mt-4 sm:mt-0">
               <UserPlus className="h-5 w-5" />
@@ -113,4 +108,4 @@ const Profile = () => {
   )
 }
 
-export default Profile
+export default EditProfile

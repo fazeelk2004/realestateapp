@@ -19,6 +19,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "https://i.pinimg.com/1200x/ce/7a/c3/ce7ac3f6a631fa435b569d16eaa60a49.jpg",
     },
+    gender: {
+        type: String,
+        default: "N/A",
+    },
+    country: {
+        type: String,
+        default: "N/A",
+    },
+    phoneNo: {
+        type: String,
+        default: "N/A",
+    },
+
 
 }, { timestamps: true });
 

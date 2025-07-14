@@ -7,6 +7,8 @@ import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
 import { Toaster } from 'react-hot-toast';
 import {PrivateProfileRoute, PrivateSignInUpRoute} from './components/PrivateRoute';
+import ResetPassword from './pages/ResetPassword';
+import EditProfile from './pages/EditProfile';
 
 export default function App() {
   return (
@@ -24,6 +26,9 @@ export default function App() {
           </Route>
           <Route element={<PrivateProfileRoute />}>
             <Route path="/profile" element={<Profile />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/profile/edit" element={<EditProfile />} />
+
           </Route>
         </Routes>
       </BrowserRouter>
