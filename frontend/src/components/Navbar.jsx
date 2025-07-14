@@ -6,12 +6,17 @@ import { useSelector } from 'react-redux';
 const Navbar = () => {
 
   const {currentUser} = useSelector((state) => state.user);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownOpen1, setDropdownOpen1] = useState(false);
+  const [dropdownOpen2, setDropdownOpen2] = useState(false);
   const location = useLocation();
 
   // Close dropdown on route change
   useEffect(() => {
-    setDropdownOpen(false);
+    setDropdownOpen1(false);
+  }, [location]);
+
+  useEffect(() => {
+    setDropdownOpen2(false);
   }, [location]);
 
   // Function to open modal
@@ -23,10 +28,10 @@ const Navbar = () => {
     <div className="navbar bg-base-200">
       <div className="navbar-start">
         <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle" onClick={() => setDropdownOpen((prev) => !prev)}>
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle" onClick={() => setDropdownOpen1((prev) => !prev)}>
             <Menu className="h-5 w-5" />
           </div>
-          {dropdownOpen && (
+          {dropdownOpen1 && (
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 shadow">
@@ -54,22 +59,24 @@ const Navbar = () => {
         }
         {currentUser ? (
           <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar" onClick={() => setDropdownOpen2((prev) => !prev)}>
               <div className="w-10 rounded-full">
                 <img src={currentUser.avatar} alt="User Avatar" />
               </div>
             </div>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-              <li>
-                <Link to="/profile" className="justify-between">
-                  Profile
-                </Link>
-              </li>
-              <li><a>Settings</a></li>
-              <li><a>Logout</a></li>
-            </ul>
+            {dropdownOpen2 && (
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                <li>
+                  <Link to="/profile" className="justify-between">
+                    Profile
+                  </Link>
+                </li>
+                <li><a>Settings</a></li>
+                <li><a>Logout</a></li>
+              </ul>
+            )}
           </div>
         ) : ( location.pathname !== "/signin" && <Link to="/signin"><span className='btn btn-primary btn-sm sm:btn-md items-center'>Sign In</span></Link> )}
       </div>
