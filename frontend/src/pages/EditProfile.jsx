@@ -1,9 +1,60 @@
-import { ArrowLeft, CircleUserRound, Key, UserPen, UserPlus } from "lucide-react";
+import { ArrowLeft, BadgePlus, CircleCheckBig, CircleSmall, CircleUserRound, Flag, Key, LogOut, Mail, Phone, Trash, User, UserPen } from "lucide-react";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
+import { useRef, useState, useEffect } from 'react';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { app } from "../firebase";
 
 const EditProfile = () => {
+
   const {currentUser} = useSelector((state) => state.user);
+  const fileRef = useRef(null);
+  const [file, setFile] = useState(undefined); 
+  const [filePercent, setFilePercent] = useState(0);
+  const [fileError, setFileError] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [showUploadComplete, setShowUploadComplete] = useState(false);
+
+  console.log(formData);
+
+  useEffect(() => {
+    if (file) { 
+      handlefileUpload(file);
+    }
+  }, [file]);
+
+  useEffect(() => {
+    if (filePercent === 100 && !fileError) {
+      setShowUploadComplete(true);
+      const timer = setTimeout(() => setShowUploadComplete(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [filePercent, fileError]);
+
+  const handlefileUpload = (file) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + file.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setFilePercent(Math.round(progress));
+      },
+      (error) => {
+        setFileError(true);
+        console.error("File Upload Error:", error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, avatar: downloadURL });
+        });
+      }
+    );
+  }
+
   return (
     <div className="flex items-center justify-center mx-5 mt-20 ">
       <div className="card bg-base-100 card-border border-base-300 w-full max-w-7xl overflow-hidden">
@@ -12,12 +63,12 @@ const EditProfile = () => {
             <div className="grow">
               <div className="flex items-center gap-2 text-sm font-medium justify-between">
                 <span className="flex items-center gap-2"> 
-                  <UserPen className="h-12 w-12" />
-                  <span className="text-base-content font-extrabold sm:text-2xl">EDIT PROFILE</span>
+                  <CircleUserRound className="h-12 w-12" />
+                  <span className="text-base-content font-extrabold sm:text-2xl">USER PROFILE</span>
                 </span>
-                <Link to="/profile" className="btn btn-ghost btn-sm">
+                <Link to="/" className="btn btn-ghost btn-sm">
                   <ArrowLeft className="h-5 w-5" />
-                  <span className="ml-2">Back to Profile</span>
+                  <span className="ml-2">Back to Home</span>
                 </Link>
               </div>
             </div>
@@ -26,64 +77,109 @@ const EditProfile = () => {
         <div className="card-body">
           <div className="flex flex-col items-center justify-center mb-4 p-3 sm:flex-row sm:items-center sm:justify-between gap-5">
             <div className="flex flex-col items-center sm:flex-row sm:items-center gap-5">
-              <img src={currentUser.avatar} alt="User Image" className="w-32 h-32 rounded-full" />
+              <input onChange={(e)=>setFile(e.target.files[0])} type="file" ref={fileRef} hidden accept="image/*"/>
+              <div className="relative flex flex-col items-center">
+                <img
+                  src={formData.avatar || currentUser.avatar}
+                  alt="User Image"
+                  onClick={() => fileRef.current.click()}
+                  className="w-32 h-32 rounded-full hover:opacity-75"
+                />
+                {/* Spinner for upload */}
+                {filePercent > 0 && filePercent < 100 && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="loading loading-spinner loading-lg"></span>
+                  </div>
+                )}
+                {/* Upload complete with tick icon, disappears after 2s */}
+                {showUploadComplete && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <CircleCheckBig className="w-12 h-12 text-green-500 mb-1" />
+                    <span className="bg-black/70 text-green-400 text-xs font-semibold px-1 py-0.5 rounded-full">
+                      UPLOAD COMPLETE!
+                    </span>
+                  </div>
+                )}
+              </div>
+              <p>
+                {fileError ? (
+                  <span className="text-red-500">File upload failed. Please try again.</span>
+                ) : null}
+              </p>
               <div className="flex flex-col items-center sm:items-start">
                 <h1 className="text-3xl font-bold mt-2 text-center sm:text-left">{currentUser.username}</h1>
                 <p className="text-md text-gray-500 text-center sm:text-left">{currentUser.email}</p>
               </div>
             </div>
-            <Link to="/profile/edit" className="btn btn-primary btn-sm sm:btn-md mt-4 sm:mt-0">
-              <UserPen className="h-5 w-5" />
-              <span className="ml-2">Edit Profile</span>
-            </Link>
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+              <Link to="" className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md mt-4 sm:mt-0">
+                <LogOut className="h-5 w-5" />
+                <span className="ml-2">Sign Out</span>
+              </Link>
+              <Link to="/profile/edit" className="btn btn-primary btn-md mt-4 sm:mt-0">
+                <UserPen className="h-5 w-5" />
+                <span className="ml-2">Edit Profile</span>
+              </Link>
+            </div>
           </div>
 
 
-          <div className="grid grid-cols-12">
-            <div className="flex-col col-span-5 mb-4" >
-              <span className="ms-4">Username</span>
-              <label className="input input-bordered border-accent rounded-full flex max-w-none items-center font-semibold text-lg gap-2 mt-1">
-                <Key className="h-5 w-5" /> 
-                <input disabled className="grow" placeholder={currentUser.username} />
+          <div className="grid grid-cols-12 gap-4">
+            {/* Username */}
+            <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
+              <span className="mb-1 text-center w-full">Username</span>
+              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+                <User className="h-5 w-5" /> 
+                <input  className="grow" placeholder={currentUser.username} />
               </label>
             </div>
-            <div className="flex-col col-span-5 col-start-8 mb-4" >
-              <span className="ms-4">Email</span>
-              <label className="input input-bordered border-accent rounded-full flex max-w-none items-center font-semibold text-lg gap-2 mt-1">
-                <Key className="h-5 w-5" /> 
-                <input disabled className="grow" placeholder={currentUser.email} />
+            {/* Email */}
+            <div className="col-span-12 sm:col-span-12  md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
+              <span className="mb-1 text-center w-full">Email</span>
+              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+                <Mail className="h-5 w-5" /> 
+                <input  className="grow" placeholder={currentUser.email} />
               </label>
             </div>
-            <div className="flex-col col-span-5 mb-4" >
-              <span className="ms-4">Gender</span>
-              <label className="input input-bordered border-accent rounded-full flex max-w-none items-center font-semibold text-lg gap-2 mt-1">
-                <Key className="h-5 w-5" /> 
-                <input disabled className="grow" placeholder={currentUser.gender} />
+            {/* Gender */}
+            <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
+              <span className="mb-1 text-center w-full">Gender</span>
+              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+                <CircleSmall className="h-5 w-5" /> 
+                <input  className="grow" placeholder={currentUser.gender} />
               </label>
             </div>
-            <div className="flex-col col-span-5 col-start-8 mb-4" >
-              <span className="ms-4">Country</span>
-              <label className="input input-bordered border-accent rounded-full flex max-w-none items-center font-semibold text-lg gap-2 mt-1">
-                <Key className="h-5 w-5" /> 
-                <input disabled className="grow" placeholder={currentUser.country} />
-              </label>
-            </div> 
-            <div className="flex-col col-span-5 mb-4" >
-              <span className="ms-4">Phone No.</span>
-              <label className="input input-bordered border-accent rounded-full flex max-w-none items-center font-semibold text-lg gap-2 mt-1">
-                <Key className="h-5 w-5" /> 
-                <input disabled className="grow" placeholder={currentUser.phoneNo} />
+            {/* Country */}
+            <div className="col-span-12 sm:col-span-12 md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
+              <span className="mb-1 text-center w-full">Country</span>
+              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+                <Flag className="h-5 w-5" /> 
+                <input  className="grow" placeholder={currentUser.country} />
               </label>
             </div>
-            <div className="flex-col col-span-5 mb-4 col-start-8" >
-              <span className="ms-4">Password</span>
-              <button className="col-span-5 col-start-8 w-full btn btn-secondary">
-                <Link to="/reset-password" className="btn btn-ghost btn-sm">
-                  <Key className="h-5 w-5" />
-                  <span className="ml-2">Password Reset</span>
-                </Link>
-              </button>
+            {/* Phone No. */}
+            <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
+              <span className="mb-1 text-center w-full">Phone No.</span>
+              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+                <Phone className="h-5 w-5" /> 
+                <input  className="grow" placeholder={currentUser.phoneNo} />
+              </label>
             </div>
+            {/* Password */}
+            <div className="col-span-12 sm:col-span-12 md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
+              <span className="mb-1 text-center w-full">Password</span>
+              <Link to="/reset-password" className="btn btn-accent btn-md w-full flex justify-center items-center gap-2">
+                <Key className="h-5 w-5" />
+                <span className="ml-2">Password Reset</span>
+              </Link>
+            </div>
+            <div className="col-span-12 sm:col-span-12 md:col-span-2 md:col-start-11 mb-4 flex flex-col items-center">
+              <Link to="" className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md w-full flex justify-center items-center gap-2">
+                <Trash className="h-5 w-5" />
+                <span className="ml-2">Delete Account</span>
+              </Link>
+            </div>
+
           </div>
             
           <div className="divider font-bold">YOUR LISTING</div>
@@ -92,10 +188,10 @@ const EditProfile = () => {
           
           <div className="flex flex-col items-center justify-center mb-4 p-3 sm:flex-row sm:items-center sm:justify-between gap-5">
             <div className="flex flex-col items-center sm:flex-row sm:items-center gap-5">
-              <span className="text-lg font-semibold">You Have No Listings Yet.</span>
+              <span className="text-lg font-semibold">You Have No Listing Yet.</span>
             </div>
             <Link to="/create-listing" className="btn btn-primary btn-sm sm:btn-md mt-4 sm:mt-0">
-              <UserPlus className="h-5 w-5" />
+              <BadgePlus className="h-5 w-5" />
               <span className="ml-2">Create Listing</span>
             </Link>
           </div>

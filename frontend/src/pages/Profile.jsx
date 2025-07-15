@@ -1,4 +1,4 @@
-import { ArrowLeft, CircleUserRound, Key, Mail, UserPen, UserPlus } from "lucide-react";
+import { ArrowLeft, BadgePlus, CircleSmall, CircleUserRound, Flag, Key, LogOut, Mail, Phone, Trash, User, UserPen } from "lucide-react";
 import { Link } from "react-router";
 import OAuth from "../components/OAuth";
 import { useSelector } from "react-redux";
@@ -33,10 +33,16 @@ const Profile = () => {
                 <p className="text-md text-gray-500 text-center sm:text-left">{currentUser.email}</p>
               </div>
             </div>
-            <Link to="/profile/edit" className="btn btn-primary btn-sm sm:btn-md mt-4 sm:mt-0">
-              <UserPen className="h-5 w-5" />
-              <span className="ml-2">Edit Profile</span>
-            </Link>
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+              <Link to="" className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md mt-4 sm:mt-0">
+                <LogOut className="h-5 w-5" />
+                <span className="ml-2">Sign Out</span>
+              </Link>
+              <Link to="/profile/edit" className="btn btn-primary btn-md mt-4 sm:mt-0">
+                <UserPen className="h-5 w-5" />
+                <span className="ml-2">Edit Profile</span>
+              </Link>
+            </div>
           </div>
 
 
@@ -44,51 +50,58 @@ const Profile = () => {
             {/* Username */}
             <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
               <span className="mb-1 text-center w-full">Username</span>
-              <label className="input input-bordered border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <Key className="h-5 w-5" /> 
+              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+                <User className="h-5 w-5" /> 
                 <input disabled className="grow" placeholder={currentUser.username} />
               </label>
             </div>
             {/* Email */}
-            <div className="col-span-12 sm:col-span-12 md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
+            <div className="col-span-12 sm:col-span-12  md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
               <span className="mb-1 text-center w-full">Email</span>
-              <label className="input input-bordered border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <Key className="h-5 w-5" /> 
+              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+                <Mail className="h-5 w-5" /> 
                 <input disabled className="grow" placeholder={currentUser.email} />
               </label>
             </div>
             {/* Gender */}
             <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
               <span className="mb-1 text-center w-full">Gender</span>
-              <label className="input input-bordered border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <Key className="h-5 w-5" /> 
+              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+                <CircleSmall className="h-5 w-5" /> 
                 <input disabled className="grow" placeholder={currentUser.gender} />
               </label>
             </div>
             {/* Country */}
             <div className="col-span-12 sm:col-span-12 md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
               <span className="mb-1 text-center w-full">Country</span>
-              <label className="input input-bordered border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <Key className="h-5 w-5" /> 
+              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+                <Flag className="h-5 w-5" /> 
                 <input disabled className="grow" placeholder={currentUser.country} />
               </label>
             </div>
             {/* Phone No. */}
             <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
               <span className="mb-1 text-center w-full">Phone No.</span>
-              <label className="input input-bordered border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <Key className="h-5 w-5" /> 
+              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
+                <Phone className="h-5 w-5" /> 
                 <input disabled className="grow" placeholder={currentUser.phoneNo} />
               </label>
             </div>
             {/* Password */}
             <div className="col-span-12 sm:col-span-12 md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
               <span className="mb-1 text-center w-full">Password</span>
-              <Link to="/reset-password" className="btn btn-secondary btn-md w-full flex justify-center items-center gap-2">
+              <Link to="/reset-password" className="btn btn-accent btn-md w-full flex justify-center items-center gap-2">
                 <Key className="h-5 w-5" />
                 <span className="ml-2">Password Reset</span>
               </Link>
             </div>
+            <div className="col-span-12 sm:col-span-12 md:col-span-2 md:col-start-11 mb-4 flex flex-col items-center">
+              <Link to="" className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md w-full flex justify-center items-center gap-2">
+                <Trash className="h-5 w-5" />
+                <span className="ml-2">Delete Account</span>
+              </Link>
+            </div>
+
           </div>
             
           <div className="divider font-bold">YOUR LISTING</div>
@@ -100,7 +113,7 @@ const Profile = () => {
               <span className="text-lg font-semibold">You Have No Listing Yet.</span>
             </div>
             <Link to="/create-listing" className="btn btn-primary btn-sm sm:btn-md mt-4 sm:mt-0">
-              <UserPlus className="h-5 w-5" />
+              <BadgePlus className="h-5 w-5" />
               <span className="ml-2">Create Listing</span>
             </Link>
           </div>
