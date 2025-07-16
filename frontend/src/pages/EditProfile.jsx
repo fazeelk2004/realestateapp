@@ -1,7 +1,9 @@
-import { ArrowLeft, BadgePlus, CircleCheckBig, CircleSmall, CircleUserRound, Flag, Key, LogOut, Mail, Phone, Trash, User, UserPen } from "lucide-react";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import { ArrowLeft, BadgePlus, Ban, Check, CircleCheckBig, CircleSmall, CircleUserRound, Flag, Info, Key, LogOut, Mail, MailCheck, Phone, Trash, User, UserPen } from "lucide-react";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
-import { useRef, useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
 
@@ -14,19 +16,23 @@ const EditProfile = () => {
   const [fileError, setFileError] = useState(false);
   const [formData, setFormData] = useState({});
   const [showUploadComplete, setShowUploadComplete] = useState(false);
+  const [showGenderDropdown, setShowGenderDropdown] = useState(false);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+
 
   console.log(formData);
+  
 
   useEffect(() => {
     if (file) { 
       handlefileUpload(file);
     }
   }, [file]);
-
+  // USED TO SHOW AND THEN HIDE THE UPLOADING STATUS
   useEffect(() => {
-    if (filePercent === 100 && !fileError) {
+    if ((filePercent === 100 && !fileError) || fileError) {
       setShowUploadComplete(true);
-      const timer = setTimeout(() => setShowUploadComplete(false), 2000);
+      const timer = setTimeout(() => setShowUploadComplete(false), 4000);
       return () => clearTimeout(timer);
     }
   }, [filePercent, fileError]);
@@ -64,11 +70,11 @@ const EditProfile = () => {
               <div className="flex items-center gap-2 text-sm font-medium justify-between">
                 <span className="flex items-center gap-2"> 
                   <CircleUserRound className="h-12 w-12" />
-                  <span className="text-base-content font-extrabold sm:text-2xl">USER PROFILE</span>
+                  <span className="text-base-content font-extrabold sm:text-2xl">EDIT PROFILE</span>
                 </span>
-                <Link to="/" className="btn btn-ghost btn-sm">
+                <Link to="/profile" className="btn btn-ghost btn-sm">
                   <ArrowLeft className="h-5 w-5" />
-                  <span className="ml-2">Back to Home</span>
+                  <span className="ml-2">Back to Profile</span>
                 </Link>
               </div>
             </div>
@@ -91,113 +97,192 @@ const EditProfile = () => {
                     <span className="loading loading-spinner loading-lg"></span>
                   </div>
                 )}
-                {/* Upload complete with tick icon, disappears after 2s */}
-                {showUploadComplete && (
+                {/* Upload complete with tick icon, disappears after 4s */}
+                {showUploadComplete && !fileError && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <CircleCheckBig className="w-12 h-12 text-green-500 mb-1" />
                     <span className="bg-black/70 text-green-400 text-xs font-semibold px-1 py-0.5 rounded-full">
-                      UPLOAD COMPLETE!
+                      UPLOADED!
+                    </span>
+                  </div>
+                )}
+                {/* Upload failed with cross icon, disappears after 4s */}
+                {showUploadComplete && fileError && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <Ban className="w-12 h-12 text-red-700 mb-1" />
+                    <span className="bg-black/70 text-red-700 text-xs font-semibold px-1 py-0.5 rounded-full">
+                      FAILED!
                     </span>
                   </div>
                 )}
               </div>
-              <p>
-                {fileError ? (
-                  <span className="text-red-500">File upload failed. Please try again.</span>
-                ) : null}
-              </p>
+
               <div className="flex flex-col items-center sm:items-start">
                 <h1 className="text-3xl font-bold mt-2 text-center sm:text-left">{currentUser.username}</h1>
                 <p className="text-md text-gray-500 text-center sm:text-left">{currentUser.email}</p>
               </div>
             </div>
-            <div className="flex flex-col md:flex-row md:items-center gap-3">
-              <Link to="" className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md mt-4 sm:mt-0">
-                <LogOut className="h-5 w-5" />
-                <span className="ml-2">Sign Out</span>
-              </Link>
-              <Link to="/profile/edit" className="btn btn-primary btn-md mt-4 sm:mt-0">
-                <UserPen className="h-5 w-5" />
-                <span className="ml-2">Edit Profile</span>
-              </Link>
-            </div>
+            {showUploadComplete && fileError && (
+              <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <span className="text-warning text-xs font-semibold mb-2 items-center flex">
+                  <Info className="inline h-4 w-4 mr-1" />
+                  Image Size Should Be Less Than 2MB
+                </span>
+              </div>
+            )}
           </div>
 
 
           <div className="grid grid-cols-12 gap-4">
             {/* Username */}
             <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Username</span>
+              <span className="mb-1 text-center w-full flex flex-auto items-center justify-center">
+                <User className="h-5 w-5 mr-2" />
+                Username
+              </span>
               <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <User className="h-5 w-5" /> 
                 <input  className="grow" placeholder={currentUser.username} />
               </label>
             </div>
             {/* Email */}
             <div className="col-span-12 sm:col-span-12  md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Email</span>
+              <span className="mb-1 text-center w-full flex flex-auto items-center justify-center">
+                <Mail className="h-5 w-5 mr-2" />
+                Email
+              </span>
               <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <Mail className="h-5 w-5" /> 
                 <input  className="grow" placeholder={currentUser.email} />
               </label>
             </div>
+
+
+
             {/* Gender */}
             <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Gender</span>
-              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <CircleSmall className="h-5 w-5" /> 
-                <input  className="grow" placeholder={currentUser.gender} />
-              </label>
+              <span className="mb-1 text-center w-full flex flex-auto items-center justify-center">
+                <CircleSmall className="h-5 w-5 mr-2" />
+                Gender
+              </span>
+              <div className="w-full flex items-center gap-2">
+                <div className="dropdown w-full">
+                  <input
+                    type="text"
+                    className="input input-bordered overflow-auto border-accent rounded-full font-semibold text-lg w-full"
+                    value={formData.gender || currentUser.gender}
+                    onChange={e => {
+                      const val = e.target.value;
+                      if (["Male", "Female", "Not Specified"].some(opt => opt.toLowerCase().startsWith(val.toLowerCase()))) {
+                        setFormData({ ...formData, gender: val });
+                      }
+                    }}
+                    onFocus={e => setShowGenderDropdown(true)}
+                    onBlur={e => setTimeout(() => setShowGenderDropdown(false), 150)}
+                    tabIndex={0}
+                    autoComplete="off"
+                    role="combobox"
+                  />
+                  {showGenderDropdown && (
+                    <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-full p-2 shadow absolute left-0 top-full">
+                      {["Male", "Female", "Not Specified"].map(option => (
+                        <li key={option}>
+                          <button
+                            type="button"
+                            onMouseDown={e => {
+                              e.preventDefault();
+                              setFormData({ ...formData, gender: option });
+                              setShowGenderDropdown(false);
+                            }}
+                            className={formData.gender === option ? "active" : ""}
+                          >
+                            {option}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
             </div>
+
+
+            
             {/* Country */}
             <div className="col-span-12 sm:col-span-12 md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Country</span>
-              <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <Flag className="h-5 w-5" /> 
-                <input  className="grow" placeholder={currentUser.country} />
-              </label>
+              <span className="mb-1 text-center w-full flex flex-auto items-center justify-center">
+                <Flag className="h-5 w-5 mr-2" />
+                Country
+              </span>
+              <div className="w-full flex items-center gap-2">
+                <div className="dropdown w-full">
+                  <input
+                    type="text"
+                    className="input input-bordered overflow-auto border-accent rounded-full font-semibold text-lg w-full"
+                    value={formData.country || currentUser.country}
+                    onChange={e => {
+                      const val = e.target.value;
+                      if (["Pakistan", "India", "USA", "UK", "Canada", "Australia", "Not Specified"].some(opt => opt.toLowerCase().startsWith(val.toLowerCase()))) {
+                        setFormData({ ...formData, country: val });
+                      }
+                    }}
+                    onFocus={e => setShowCountryDropdown(true)}
+                    onBlur={e => setTimeout(() => setShowCountryDropdown(false), 150)}
+                    tabIndex={0}
+                    autoComplete="off"
+                    role="combobox"
+                  />
+                  {showCountryDropdown && (
+                    <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-full p-2 shadow absolute left-0 top-full">
+                      {["Pakistan", "India", "USA", "UK", "Canada", "Australia", "Not Specified"].map(option => (
+                        <li key={option}>
+                          <button
+                            type="button"
+                            onMouseDown={e => {
+                              e.preventDefault();
+                              setFormData({ ...formData, country: option });
+                              setShowCountryDropdown(false);
+                            }}
+                            className={formData.country === option ? "active" : ""}
+                          >
+                            {option}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
             </div>
             {/* Phone No. */}
             <div className="col-span-12 sm:col-span-12 md:col-span-5 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Phone No.</span>
+              <span className="mb-1 text-center w-full flex flex-auto items-center justify-center">
+                <Phone className="h-5 w-5 mr-2" />
+                Phone No.
+              </span>
               <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <Phone className="h-5 w-5" /> 
-                <input  className="grow" placeholder={currentUser.phoneNo} />
+                <input
+                  className="grow"
+                  type="text"
+                  value={formData.phoneNo || currentUser.phoneNo}
+                  maxLength={11}
+                  onChange={e => {
+                    const val = e.target.value.replace(/\D/g, ""); // Only digits
+                    if (
+                      (val === "" || (val.startsWith("0") && val.length <= 11))
+                    ) {
+                      setFormData({ ...formData, phoneNo: val });
+                    }
+                  }}
+                />
               </label>
             </div>
-            {/* Password */}
-            <div className="col-span-12 sm:col-span-12 md:col-span-5 md:col-start-8 mb-4 flex flex-col items-center">
-              <span className="mb-1 text-center w-full">Password</span>
-              <Link to="/reset-password" className="btn btn-accent btn-md w-full flex justify-center items-center gap-2">
-                <Key className="h-5 w-5" />
-                <span className="ml-2">Password Reset</span>
+            {/* Save Changes */}
+            <div className="col-span-12 sm:col-span-12 md:col-span-2 md:col-start-11 my-6 flex flex-col items-center">
+              <Link to="" className="btn btn-success text-white btn-md w-full  flex justify-center items-center gap-2">
+                <Check className="h-5 w-5" />
+                <span>Save Changes</span>
               </Link>
             </div>
-            <div className="col-span-12 sm:col-span-12 md:col-span-2 md:col-start-11 mb-4 flex flex-col items-center">
-              <Link to="" className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md w-full flex justify-center items-center gap-2">
-                <Trash className="h-5 w-5" />
-                <span className="ml-2">Delete Account</span>
-              </Link>
-            </div>
-
           </div>
-            
-          <div className="divider font-bold">YOUR LISTING</div>
-          
-          
-          
-          <div className="flex flex-col items-center justify-center mb-4 p-3 sm:flex-row sm:items-center sm:justify-between gap-5">
-            <div className="flex flex-col items-center sm:flex-row sm:items-center gap-5">
-              <span className="text-lg font-semibold">You Have No Listing Yet.</span>
-            </div>
-            <Link to="/create-listing" className="btn btn-primary btn-sm sm:btn-md mt-4 sm:mt-0">
-              <BadgePlus className="h-5 w-5" />
-              <span className="ml-2">Create Listing</span>
-            </Link>
-          </div>
-
-
-
         </div>
       </div>
     </div>

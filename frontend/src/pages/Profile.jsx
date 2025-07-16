@@ -38,7 +38,7 @@ const Profile = () => {
                 <LogOut className="h-5 w-5" />
                 <span className="ml-2">Sign Out</span>
               </Link>
-              <Link to="/profile/edit" className="btn btn-primary btn-md mt-4 sm:mt-0">
+              <Link to="/profile/edit" className="btn btn-accent btn-md mt-4 sm:mt-0">
                 <UserPen className="h-5 w-5" />
                 <span className="ml-2">Edit Profile</span>
               </Link>
