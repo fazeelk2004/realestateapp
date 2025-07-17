@@ -97,9 +97,13 @@ const EditProfile = () => {
       navigate("/profile")
     } catch (error) {
       
-      dispatch(updateUserFailure(error.message))
-      toast.error("Failed To Update Profile. Please Try Again.");
-      console.log("Error Updating Profile:", error); 
+      dispatch(updateUserFailure(error.message));
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Failed To Delete User. Please Try Again.");
+      }
+      console.log("Error Deleting User:", error); 
     }
   }
 

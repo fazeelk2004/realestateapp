@@ -1,10 +1,35 @@
 import { ArrowLeft, BadgePlus, CircleSmall, CircleUserRound, Flag, Key, LogOut, Mail, Phone, Trash, User, UserPen } from "lucide-react";
-import { Link } from "react-router";
-import OAuth from "../components/OAuth";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteUserFailure, deleteUserStart, deleteUserSuccess } from "../redux/user/userSlice.js";
+import api from "../lib/axios.js";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal.jsx";
 
 const Profile = () => {
   const {currentUser} = useSelector((state) => state.user);
+  const [showModal, setShowModal] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(deleteUserStart());
+      const res = await api.delete(`/user/delete/${currentUser._id}`)
+      const data = res.data;
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data.user));
+      navigate("/")
+      toast.success("Successfully Deleted The Profile!");
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message))
+    }
+  }
+
   return (
     <div className="flex items-center justify-center mx-5 mt-20 ">
       <div className="card bg-base-100 card-border border-base-300 w-full max-w-7xl overflow-hidden">
@@ -96,10 +121,10 @@ const Profile = () => {
               </Link>
             </div>
             <div className="col-span-12 sm:col-span-12 md:col-span-2 md:col-start-11 mb-4 flex flex-col items-center">
-              <Link to="" className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md w-full flex justify-center items-center gap-2">
+              <button onClick={() => setShowModal(true)} className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md w-full flex justify-center items-center gap-2">
                 <Trash className="h-5 w-5" />
                 <span className="ml-2">Delete Account</span>
-              </Link>
+              </button>
             </div>
 
           </div>
@@ -118,6 +143,11 @@ const Profile = () => {
             </Link>
           </div>
 
+          <ConfirmDeleteModal
+            open={showModal}
+            onCancel={() => setShowModal(false)}
+            onDelete={e => handleDelete(e)}
+          />
 
 
         </div>
