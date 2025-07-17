@@ -1,20 +1,23 @@
 import { ArrowLeft, BadgePlus, CircleSmall, CircleUserRound, Flag, Key, LogOut, Mail, Phone, Trash, User, UserPen } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteUserFailure, deleteUserStart, deleteUserSuccess } from "../redux/user/userSlice.js";
+import { deleteUserFailure, deleteUserStart, deleteUserSuccess, logoutUserFailure, logoutUserStart, logoutUserSuccess } from "../redux/user/userSlice.js";
 import api from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal.jsx";
+import ConfirmLogoutModal from "../components/ConfirmLogoutModal.jsx";
 
 const Profile = () => {
   const {currentUser} = useSelector((state) => state.user);
-  const [showModal, setShowModal] = useState(false);
+  const [showModalDelete, setShowModalDelete] = useState(false);
+  const [showModalLogout, setShowModalLogout] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
+      setShowModalDelete(false)
       dispatch(deleteUserStart());
       const res = await api.delete(`/user/delete/${currentUser._id}`)
       const data = res.data;
@@ -27,6 +30,24 @@ const Profile = () => {
       toast.success("Successfully Deleted The Profile!");
     } catch (error) {
       dispatch(deleteUserFailure(error.message))
+    }
+  }
+
+  const handleLogout = async () => {
+    try {
+      setShowModalLogout(false)
+      dispatch(logoutUserStart());
+      const res = await api.get("/auth/signout");
+      const data = res.data
+      if (data.success === false){
+        dispatch(logoutUserFailure(data.message));
+        return;
+      }
+      dispatch(logoutUserSuccess(data.user));
+      navigate("/")
+      toast.success("Successfully Logged Out!");
+    } catch (error) {
+      dispatch(logoutUserFailure(error.message))
     }
   }
 
@@ -59,10 +80,10 @@ const Profile = () => {
               </div>
             </div>
             <div className="flex flex-col md:flex-row md:items-center gap-3">
-              <Link to="" className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md mt-4 sm:mt-0">
+              <button onClick={() => setShowModalLogout(true)} className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md mt-4 sm:mt-0">
                 <LogOut className="h-5 w-5" />
                 <span className="ml-2">Sign Out</span>
-              </Link>
+              </button>
               <Link to="/profile/edit" className="btn btn-accent btn-md mt-4 sm:mt-0">
                 <UserPen className="h-5 w-5" />
                 <span className="ml-2">Edit Profile</span>
@@ -121,7 +142,7 @@ const Profile = () => {
               </Link>
             </div>
             <div className="col-span-12 sm:col-span-12 md:col-span-2 md:col-start-11 mb-4 flex flex-col items-center">
-              <button onClick={() => setShowModal(true)} className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md w-full flex justify-center items-center gap-2">
+              <button onClick={() => setShowModalDelete(true)} className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md w-full flex justify-center items-center gap-2">
                 <Trash className="h-5 w-5" />
                 <span className="ml-2">Delete Account</span>
               </button>
@@ -144,9 +165,14 @@ const Profile = () => {
           </div>
 
           <ConfirmDeleteModal
-            open={showModal}
-            onCancel={() => setShowModal(false)}
+            open={showModalDelete}
+            onCancel={() => setShowModalDelete(false)}
             onDelete={e => handleDelete(e)}
+          />
+          <ConfirmLogoutModal
+            open={showModalLogout}
+            onCancel={() => setShowModalLogout(false)}
+            onDelete={e => handleLogout(e)}
           />
 
 

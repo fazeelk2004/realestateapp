@@ -1,14 +1,22 @@
 import { Menu, Search } from 'lucide-react';
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router'
-import { useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate } from 'react-router'
+import { useDispatch, useSelector } from 'react-redux';
+import ConfirmLogoutModal from './ConfirmLogoutModal.jsx'
+import api from '../lib/axios.js';
+import { logoutUserFailure, logoutUserStart, logoutUserSuccess } from "../redux/user/userSlice.js";
+import toast from 'react-hot-toast';
+
 
 const Navbar = () => {
 
   const {currentUser} = useSelector((state) => state.user);
   const [dropdownOpen1, setDropdownOpen1] = useState(false);
   const [dropdownOpen2, setDropdownOpen2] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Close dropdown on route change
   useEffect(() => {
@@ -23,6 +31,24 @@ const Navbar = () => {
   const openSearchModal = () => {
     document.getElementById('my_modal_1').showModal();
   };
+
+  const handleLogout = async () => {
+    try {
+      setShowModal(false)
+      dispatch(logoutUserStart());
+      const res = await api.get("/auth/signout");
+      const data = res.data
+      if (data.success === false){
+        dispatch(logoutUserFailure(data.message));
+        return;
+      }
+      dispatch(logoutUserSuccess(data.user));
+      navigate("/")
+      toast.success("Successfully Logged Out!");
+    } catch (error) {
+      dispatch(logoutUserFailure(error.message))
+    }
+  }
 
   return (
     <div className="navbar bg-base-200">
@@ -73,14 +99,18 @@ const Navbar = () => {
                     Profile
                   </Link>
                 </li>
-                <li><a>Settings</a></li>
-                <li><a>Logout</a></li>
+                <li><a onClick={() => setShowModal(true)}>Logout</a></li>
               </ul>
             )}
           </div>
         ) : ( location.pathname !== "/signin" && <Link to="/signin"><span className='btn btn-primary btn-sm sm:btn-md items-center'>Sign In</span></Link> )}
       </div>
 
+      <ConfirmLogoutModal
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        onDelete={e => handleLogout(e)}
+      />
 
       {/* Modal */}
       <dialog id="my_modal_1" className="modal">
