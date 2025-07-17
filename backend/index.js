@@ -12,9 +12,11 @@ const app = express();                                                // CREATIN
 
 app.use(cors({
   origin: "http://localhost:5173",
+  credentials: true, // Allow credentials (cookies) to be sent
 }));
 
 app.use(express.json());                                              //MIDDLEWARE TO PARSE JSON REQUEST BODIES
+app.use(cookieParser());                                              //MIDDLEWARE TO PARSE COOKIES
 
 mongoose.connect(process.env.MONGO).then(() => {                      // CONNECTING TO MONGODB USING MONGOOSE
   console.log('MongoDB Connected');

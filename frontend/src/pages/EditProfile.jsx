@@ -1,15 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { ArrowLeft, BadgePlus, Ban, Check, CircleCheckBig, CircleSmall, CircleUserRound, Flag, Info, Key, LogOut, Mail, MailCheck, Phone, Trash, User, UserPen } from "lucide-react";
-import { Link } from "react-router";
-import { useSelector } from "react-redux";
+import { ArrowLeft, Ban, Check, CircleCheckBig, CircleSmall, CircleUserRound, Flag, Info, Key, Mail,  Phone, User } from "lucide-react";
+import { Link, useNavigate } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef, useState } from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
+import { toast } from "react-hot-toast";
+import { updateUserFailure, updateUserStart, updateUserSuccess } from "../redux/user/userSlice.js";
+import api from "../lib/axios.js";
 
 const EditProfile = () => {
 
-  const {currentUser} = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {currentUser, loading} = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined); 
   const [filePercent, setFilePercent] = useState(0);
@@ -18,9 +23,6 @@ const EditProfile = () => {
   const [showUploadComplete, setShowUploadComplete] = useState(false);
   const [showGenderDropdown, setShowGenderDropdown] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-
-
-  console.log(formData);
   
 
   useEffect(() => {
@@ -61,6 +63,39 @@ const EditProfile = () => {
     );
   }
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart())
+      
+      const res = await api.post(`/user/update/${currentUser._id}`, {
+        username: formData.username,
+        email: formData.email,
+        avatar: formData.avatar,
+        gender: formData.gender,
+        country: formData.country,
+        phoneNo: formData.phoneNo,
+      });
+      const data = res.data;
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+      dispatch(updateUserSuccess(data.user));
+      toast.success("Successfully Updated The Profile!");
+      navigate("/profile")
+    } catch (error) {
+      
+      dispatch(updateUserFailure(error.message))
+      toast.error("Failed To Update Profile. Please Try Again.");
+      console.log("Error Updating Profile:", error); 
+    }
+  }
+
   return (
     <div className="flex items-center justify-center mx-5 mt-20 ">
       <div className="card bg-base-100 card-border border-base-300 w-full max-w-7xl overflow-hidden">
@@ -90,7 +125,7 @@ const EditProfile = () => {
                   alt="User Image"
                   onClick={() => fileRef.current.click()}
                   className="w-32 h-32 rounded-full hover:opacity-75"
-                />
+                /> 
                 {/* Spinner for upload */}
                 {filePercent > 0 && filePercent < 100 && (
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -141,7 +176,13 @@ const EditProfile = () => {
                 Username
               </span>
               <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <input  className="grow" placeholder={currentUser.username} />
+                <input  
+                  className="grow" 
+                  defaultValue={currentUser.username}
+                  id="username" 
+                  placeholder="Username" 
+                  onChange={handleChange}
+                />
               </label>
             </div>
             {/* Email */}
@@ -151,7 +192,13 @@ const EditProfile = () => {
                 Email
               </span>
               <label className="input input-bordered overflow-auto border-accent rounded-full flex items-center font-semibold text-lg gap-2 w-full">
-                <input  className="grow" placeholder={currentUser.email} />
+                <input  
+                  className="grow" 
+                  defaultValue={currentUser.email} 
+                  placeholder="Email" 
+                  id="email"
+                  onChange={handleChange}
+                />
               </label>
             </div>
 
@@ -167,12 +214,13 @@ const EditProfile = () => {
                 <div className="dropdown w-full">
                   <input
                     type="text"
+                    id="gender"
                     className="input input-bordered overflow-auto border-accent rounded-full font-semibold text-lg w-full"
-                    value={formData.gender || currentUser.gender}
+                    value={formData.gender ?? currentUser.gender ?? ""}
                     onChange={e => {
                       const val = e.target.value;
                       if (["Male", "Female", "Not Specified"].some(opt => opt.toLowerCase().startsWith(val.toLowerCase()))) {
-                        setFormData({ ...formData, gender: val });
+                        handleChange(e);
                       }
                     }}
                     onFocus={e => setShowGenderDropdown(true)}
@@ -217,11 +265,11 @@ const EditProfile = () => {
                   <input
                     type="text"
                     className="input input-bordered overflow-auto border-accent rounded-full font-semibold text-lg w-full"
-                    value={formData.country || currentUser.country}
+                    value={formData.country ?? currentUser.country ?? ""}
                     onChange={e => {
                       const val = e.target.value;
                       if (["Pakistan", "India", "USA", "UK", "Canada", "Australia", "Not Specified"].some(opt => opt.toLowerCase().startsWith(val.toLowerCase()))) {
-                        setFormData({ ...formData, country: val });
+                        handleChange(e);
                       }
                     }}
                     onFocus={e => setShowCountryDropdown(true)}
@@ -262,7 +310,8 @@ const EditProfile = () => {
                 <input
                   className="grow"
                   type="text"
-                  value={formData.phoneNo || currentUser.phoneNo}
+                  placeholder="Phone No."
+                  value={formData.phoneNo ?? currentUser.phoneNo ?? ""}
                   maxLength={11}
                   onChange={e => {
                     const val = e.target.value.replace(/\D/g, ""); // Only digits
@@ -277,10 +326,10 @@ const EditProfile = () => {
             </div>
             {/* Save Changes */}
             <div className="col-span-12 sm:col-span-12 md:col-span-2 md:col-start-11 my-6 flex flex-col items-center">
-              <Link to="" className="btn btn-success text-white btn-md w-full  flex justify-center items-center gap-2">
+              <button disabled={loading} onClick={handleSubmit} className="btn btn-success text-white btn-md w-full  flex justify-center items-center gap-2">
                 <Check className="h-5 w-5" />
-                <span>Save Changes</span>
-              </Link>
+                {loading ? <span className="loading loading-infinity loading-lg text-secondary"></span> : <span>Save Changes</span>}
+              </button>
             </div>
           </div>
         </div>
@@ -289,4 +338,8 @@ const EditProfile = () => {
   )
 }
 
+
 export default EditProfile
+
+
+
