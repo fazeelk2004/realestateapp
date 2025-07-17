@@ -11,8 +11,16 @@ export const test = (req, res) => {
 export const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.id) return next(errorHandler(403, "You Can Only Update Your Own Account!" ));
   try {
-    if(req.body.password) {
-      req.body.password = await bcryptjs.hashSync(req.body.password, 10)
+    if (req.body.password && req.body.currentpassword) {
+      const user = await User.findById(req.params.id);
+      const isPasswordValid = bcryptjs.compareSync(req.body.currentpassword, user.password);
+      if (!isPasswordValid) {
+        return res.status(400).json({
+          success: false,
+          message: "Current Password Is Incorrect!"
+        });
+      }
+      req.body.password = await bcryptjs.hashSync(req.body.password, 10);
     }
     const updateUser = await User.findByIdAndUpdate(req.params.id, {
       $set: {

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { ArrowLeft, Ban, Check, CircleCheckBig, CircleSmall, CircleUserRound, Flag, Info, Key, Mail,  Phone, User } from "lucide-react";
+import { ArrowLeft, Ban, Check, CircleCheckBig, CircleSmall, Flag, Info, Mail, Phone, User, UserRoundPen } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef, useState } from 'react';
@@ -30,6 +30,7 @@ const EditProfile = () => {
       handlefileUpload(file);
     }
   }, [file]);
+
   // USED TO SHOW AND THEN HIDE THE UPLOADING STATUS
   useEffect(() => {
     if ((filePercent === 100 && !fileError) || fileError) {
@@ -69,6 +70,12 @@ const EditProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(formData.email !== undefined) {
+      if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        toast.error("Invalid Email Address");
+        return;
+      }
+    }
     try {
       dispatch(updateUserStart())
       
@@ -104,7 +111,7 @@ const EditProfile = () => {
             <div className="grow">
               <div className="flex items-center gap-2 text-sm font-medium justify-between">
                 <span className="flex items-center gap-2"> 
-                  <CircleUserRound className="h-12 w-12" />
+                  <UserRoundPen className="h-12 w-12" />
                   <span className="text-base-content font-extrabold sm:text-2xl">EDIT PROFILE</span>
                 </span>
                 <Link to="/profile" className="btn btn-ghost btn-sm">
