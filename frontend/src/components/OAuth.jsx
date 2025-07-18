@@ -36,6 +36,6 @@ export default function OAuth() {
         }
     }
   return (
-    <button onClick={handleGoogleClick} type='button' className='bg-red-600 hover:bg-red-900 btn w-full'>CONTINUE WITH GOOGLE</button>
+    <button onClick={handleGoogleClick} type='button' className='bg-red-600 border-red-600 hover:border-red-900 hover:bg-red-900 btn w-full'>CONTINUE WITH GOOGLE</button>
   )
 }

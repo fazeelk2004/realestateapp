@@ -14,7 +14,7 @@ export default function App() {
   return (
     <div>
       <Toaster />
-      <div className="absolute inset-0 -z-10 h-full w-full px-5 py-24 bg-stone-950"/>
+      <div className="fixed inset-0 -z-10 min-h-screen w-full px-5 py-24 bg-stone-900 bg-opacity-75"></div>
       <BrowserRouter>
         <Navbar />
         <Routes>

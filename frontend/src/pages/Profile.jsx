@@ -52,7 +52,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex items-center justify-center mx-5 mt-20 ">
+    <div className="flex items-center justify-center mx-5 my-10 ">
       <div className="card bg-base-100 card-border border-base-300 w-full max-w-7xl overflow-hidden">
         <div className="border-base-300 border-b border-dashed">
           <div className="flex items-center gap-2 p-4">
