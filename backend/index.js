@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import userRouter from './routes/user.route.js';
 import authRouter from './routes/auth.route.js';
+import listingRouter from './routes/listing.route.js';
 import cookieParser from 'cookie-parser';
 
 dotenv.config();                                                      // LOADING ENVIRONMENT VARIABLES FROM .env FILE 
@@ -29,6 +30,7 @@ mongoose.connect(process.env.MONGO).then(() => {                      // CONNECT
 
 app.use("/api/user", userRouter);                                     // MIDDLEWARE TO HANDLE USER ROUTES
 app.use("/api/auth", authRouter);                                     // MIDDLEWARE TO HANDLE AUTH ROUTES
+app.use("/api/listing", listingRouter);                               // MIDDLEWARE TO HANDLE LISTING ROUTES
 app.use((err, req, res, next) => {                                    // MIDDLEWARE TO HANDLE ERRORS
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal Server Error';
