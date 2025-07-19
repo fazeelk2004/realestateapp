@@ -14,7 +14,8 @@ export default function App() {
   return (
     <div>
       <Toaster />
-      <div className="fixed inset-0 -z-10 min-h-screen w-full px-5 py-24 bg-stone-900 bg-opacity-75"></div>
+      {/* <div className="fixed inset-0 -z-10 min-h-screen w-full px-5 py-24 bg-stone-900 bg-opacity-75"></div> */}
+      <div class="fixed inset-0 -z-10 h-full w-full bg-stone-800 [background:radial-gradient(200%_150%_at_50%_0%,rgba(230,225,211,100)_0%,rgba(69,142,181,100)_60%,rgba(24,173,237,0.6)_100%)]"></div>
       <BrowserRouter>
         <Navbar />
         <Routes>

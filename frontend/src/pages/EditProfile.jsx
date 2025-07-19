@@ -339,7 +339,7 @@ const EditProfile = () => {
             <div className="col-span-12 sm:col-span-12 md:col-span-2 md:col-start-11 my-6 flex flex-col items-center">
               <button disabled={loading} onClick={handleSubmit} className="btn btn-success text-white btn-md w-full  flex justify-center items-center gap-2">
                 <Check className="h-5 w-5" />
-                {loading ? <span className="loading loading-infinity loading-lg text-secondary"></span> : <span>Save Changes</span>}
+                {loading ? <span className="loading loading-infinity loading-lg text-white"></span> : <span>Save Changes</span>}
               </button>
             </div>
           </div>

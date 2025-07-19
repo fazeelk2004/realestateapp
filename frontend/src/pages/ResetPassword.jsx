@@ -114,7 +114,7 @@ export default function ResetPassword() {
           </div>  
           <div className="card-actions items-center gap-2 flex justify-start mt-5">
             <button className="btn btn-accent w-full" onClick={handleSubmit} disabled={loading || !passwordsMatch} >
-              {passwordsMatch ? loading ? <span className="loading loading-infinity loading-lg text-secondary"></span> : "CHANGE PASSWORD" : "PASSWORD DOES NOT MATCH"}
+              {passwordsMatch ? loading ? <span className="loading loading-infinity loading-lg text-white"></span> : "CHANGE PASSWORD" : "PASSWORD DOES NOT MATCH"}
             </button>
           </div>
         </div>

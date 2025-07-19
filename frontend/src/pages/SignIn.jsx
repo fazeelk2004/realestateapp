@@ -99,7 +99,7 @@ export default function SignUp() {
           </div>  
           <div className="card-actions items-center gap-2 flex justify-start mt-5">
             <button className="btn btn-accent w-full" onClick={handleSubmit} disabled={loading}>
-              {loading ? <span className="loading loading-infinity loading-lg text-secondary"></span> : "SIGN IN"}
+              {loading ? <span className="loading loading-infinity loading-lg text-white"></span> : "SIGN IN"}
             </button>
           </div>
           <OAuth />
