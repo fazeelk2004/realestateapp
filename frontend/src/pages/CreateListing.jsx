@@ -1,20 +1,92 @@
-import { ArrowLeft, FilePlus2, Key, Mail, User } from "lucide-react";
-import { Link } from "react-router";
-import OAuth from "../components/OAuth";
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+import { FilePlus2, Trash } from "lucide-react";
+import { useState, useEffect } from "react";
 import bannerListing from "../assets/banner-listing.png";
-
+import {getStorage, ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
+import { app } from '../firebase'
+import { toast } from "react-hot-toast";
 
 const CreateListing = () => {
 
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [uploading, setUploading] = useState(false);
+  const [imageUploadError, setImageUploadError] = useState(false);
+  const [formData, setFormData] = useState({
+    imageUrls: [],
+  });
+  const [files, setFiles] = useState([])
+  console.log(formData);
   
+  useEffect(() => {
+    if (imageUploadError) {
+      toast.error(imageUploadError);
+    }
+  }, [imageUploadError]);
+
+  const handleImageSubmit = (e) => {
+    if (files.length > 0 && files.length + formData.imageUrls.length < 9){
+      setUploading(true);
+      setImageUploadError(false);
+      const promises = [];
+
+      for (let i=0; i<files.length; i++){
+        promises.push(storeImage(files[i]));
+      }
+      Promise.all(promises).then((urls) => {
+        setFormData({ ...formData, imageUrls: formData.imageUrls.concat(urls) });
+        setImageUploadError(false);
+        setUploading(false);
+      }).catch((err) => {
+        console.log(err);
+        const msg = 'Image Upload Failed (2MB MAX PER IMAGE)';
+        setImageUploadError(msg);
+        setUploading(false);
+        toast.error(msg);
+      })
+    } else {
+      setImageUploadError('You Can Only Upload 8 Images Per Listing');
+      setUploading(false);
+    }
+  }
+  
+  
+
+  const storeImage = async (file) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload Is ${progress}% Done.`);
+        },
+        (error) => {
+          reject(error);
+        },
+        ()=>{
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        }
+      )
+    });
+  }
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value
+    })
+  }
+
+  const handleRemoveImage = (index) => {
+    setFormData({
+      ...formData,
+      imageUrls: formData.imageUrls.filter((_ , i) => i !== index),
     })
   }
 
@@ -39,7 +111,7 @@ const CreateListing = () => {
             </div>
           </div>
           <div className="card-body gap-4">
-            <form className="flex flex-col sm:flex-row gap-10">
+            <form className="flex flex-col md:flex-row gap-10">
               <div className="flex flex-col gap-6 flex-1">
                 <input type="text" placeholder="Name" className="input input-bordered overflow-auto border-accent rounded-box flex items-center font-semibold text-lg gap-2 w-full" id="name" maxLength='62' minLength='10' required/>
                 <textarea type="text" placeholder="Description" className="textarea textarea-bordered overflow-auto border-accent rounded-box flex items-center font-semibold text-lg gap-2 w-full" id="description" required/>
@@ -94,12 +166,23 @@ const CreateListing = () => {
               <div className="flex flex-col flex-1 gap-6">
                 <span className="font-semibold">IMAGES: <span className="text-gray-500 italic font-normal">THE FIRST IMAGE WILL BE THE COVER. (MAX 6)</span></span>
                 <div className="flex items-center gap-3">
-                  <input type="file" id="images" accept="image/*" multiple className="file-input file-input-bordered w-full max-w-xs" />
-                  <button className="btn bg-[#43546A] border-[#43546A] hover:shadow-lg">UPLOAD</button>
+                  <input onChange={(e)=>setFiles(e.target.files)} type="file" id="images" accept="image/*" multiple className="file-input file-input-bordered w-full max-w-xs" />
+                  <button disabled={uploading} type="button" onClick={handleImageSubmit} className="btn bg-[#43546A] border-[#43546A] hover:shadow-lg">
+                    {uploading ? <span className="loading loading-infinity loading-lg text-white"></span> : <span>UPLOAD</span>}  
+                  </button>               
+                </div>
+                <div className="flex flex-col gap-2 max-h-80 overflow-y-auto p-2 w-full ">
+                {
+                  formData.imageUrls.length > 0 && formData.imageUrls.map((url, index) => (
+                    <div key={url} className="border border-accent rounded p-4 mb-2 flex justify-between items-center">
+                      <img src={url} alt="Listing Error!" className="w-24 object-contain rounded-lg" />
+                      <button type="button" onClick={()=>handleRemoveImage(index)} className="text-red-600 hover:text-red-900"><Trash/></button>
+                    </div>
+                  ))
+                }
                 </div>
                 <button className="btn btn-accent rounded-lg uppercase hover:shadow-lg">Create Listing</button>
               </div>
-              
             </form>
           </div>
         </div>
