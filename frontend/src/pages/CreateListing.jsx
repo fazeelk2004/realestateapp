@@ -218,11 +218,11 @@ const CreateListing = () => {
                 </div>
                 <div className="flex gap-6 flex-wrap">
                   <label className="items-center flex gap-2">
-                    <input onChange={handleChange} value={formData.bedrooms} type="number" id="bedroom" min='1' max='10' required className="input input-bordered border-accent font-bold w-16" />
+                    <input onChange={handleChange} value={formData.bedrooms} type="number" id="bedrooms" min='1' max='10' required className="input input-bordered border-accent font-bold w-16" />
                     <span className="label-text">Bedrooms</span>
                   </label>
                   <label className="items-center flex gap-2">
-                    <input onChange={handleChange} value={formData.bathrooms} type="number" id="bathroom" min='1' max='10' required className="input input-bordered border-accent font-bold w-16" />
+                    <input onChange={handleChange} value={formData.bathrooms} type="number" id="bathrooms" min='1' max='10' required className="input input-bordered border-accent font-bold w-16" />
                     <span className="label-text">Bathrooms</span>
                   </label>
                   <label className="items-center flex gap-2">
