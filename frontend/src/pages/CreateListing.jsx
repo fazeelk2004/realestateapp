@@ -242,7 +242,7 @@ const CreateListing = () => {
                 </div>
               </div>
               <div className="flex flex-col flex-1 gap-6">
-                <span className="font-semibold">IMAGES: <span className="text-gray-500 italic font-normal">THE FIRST IMAGE WILL BE THE COVER. (MAX 6)</span></span>
+                <span className="font-semibold">IMAGES: <span className="text-gray-500 italic font-normal">THE FIRST IMAGE WILL BE THE COVER. (MAX 8)</span></span>
                 <div className="flex items-center gap-3">
                   <input onChange={(e)=>setFiles(e.target.files)} type="file" id="images" accept="image/*" multiple className="file-input file-input-bordered w-full max-w-xs" />
                   <button disabled={uploading} type="button" onClick={handleImageSubmit} className="btn bg-[#43546A] border-[#43546A] hover:shadow-lg">
