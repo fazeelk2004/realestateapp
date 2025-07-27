@@ -7,6 +7,7 @@ import { app } from '../firebase'
 import { toast } from "react-hot-toast";
 import api from "../lib/axios";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 
 const CreateListing = () => {
 
@@ -14,6 +15,7 @@ const CreateListing = () => {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [imageUploadError, setImageUploadError] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: '',
@@ -163,6 +165,7 @@ const CreateListing = () => {
       if(data.success === false){
         setErrorSaving(data.message);
       }
+      navigate('/profile');
     } catch (error) {
       setErrorSaving(error.message);
       setLoading(false);
