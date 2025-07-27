@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal.jsx";
 import ConfirmLogoutModal from "../components/ConfirmLogoutModal.jsx";
 import { ListingCard } from "../components/ListingCard.jsx";
+import ListingsCarousel from "../components/ListingsCarousel.jsx";
 
 const Profile = () => {
   const {currentUser} = useSelector((state) => state.user);
@@ -71,22 +72,6 @@ const Profile = () => {
     };
     fetchListings();
   },[currentUser._id])
-
-
-  // const handleShowListings = async () => {
-  //   try {
-  //     const res = await api.get(`/user/listings/${currentUser._id}`);
-  //     const data = res.data;
-  //     if(data.success === false) {
-  //       toast.error("ERROR SHOWING USER LISTINGS!");
-  //       return;
-  //     }
-  //   } catch (error) {
-  //     toast.error("Error Showing User Listings!");
-  //     console.error("Failed to fetch listings:", error);
-      
-  //   }
-  // }
 
   return (
     <div className="flex items-center justify-center mx-5 my-10 ">
@@ -191,18 +176,14 @@ const Profile = () => {
           
           
           
-          <div className="flex flex-col items-center justify-center mb-4 p-3 sm:flex-row sm:items-center sm:justify-between gap-5">
-            <div className="flex flex-col items-center sm:flex-row sm:items-center gap-5">
-              {loading && <div className="text-center text-lg">Loading Listings...</div>}
-              {listings.length > 0 && (
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-                  {listings.map(listingeach => (
-                    <ListingCard key={listingeach._id} listing={listingeach} />
-                  ))}
-                </div>   
-              )}
-            </div>
-            <Link to="/create-listing" className="btn btn-primary btn-sm sm:btn-md mt-4 sm:mt-0">
+          <div className="flex flex-col items-center sm:flex-row sm:items-center gap-5">
+            {loading && <span className="loading loading-infinity loading-lg text-white"></span>}
+            {listings.length > 0 && (
+              <ListingsCarousel listings={listings} />
+            )}
+          </div>
+          <div className="flex justify-center mt-6">
+            <Link to="/create-listing" className="btn btn-primary btn-sm sm:btn-md">
               <BadgePlus className="h-5 w-5" />
               <span className="ml-2">Create Listing</span>
             </Link>
