@@ -130,6 +130,10 @@ const CreateListing = () => {
   
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (formData.name.length < 10 || formData.name.length > 62){
+      toast.error("Please Enter A Valid Title! (Lenght Should Be: 10-62)");
+      return;
+    }
     if (formData.name === ''){
       toast.error("Please Give A Title For The Listing!")
       return;
@@ -166,14 +170,7 @@ const CreateListing = () => {
       toast.error("Please Enter A Valid Number Of Bathrooms!");
       return;
     }
-    if (formData.name.length < 10 || formData.name.length > 62){
-      toast.error("Please Enter A Valid Title!");
-      return;
-    }
-    if (formData.description.length < 10 || formData.description.length > 1000){
-      toast.error("Please Enter A Valid Description!");
-      return;
-    }
+    
     try {
       setLoading(true);
       setErrorSaving(false);
@@ -197,6 +194,7 @@ const CreateListing = () => {
       if(data.success === false){
         setErrorSaving(data.message);
       }
+      toast.success("Successfully Created The Listing!");
       navigate('/profile');
     } catch (error) {
       setErrorSaving(error.message);
@@ -226,7 +224,7 @@ const CreateListing = () => {
           <div className="card-body gap-4">
             <form onSubmit={handleFormSubmit} className="flex flex-col md:flex-row gap-10">
               <div className="flex flex-col gap-6 flex-1">
-                <input onChange={handleChange} value={formData.name} type="text" placeholder="Title" className="input input-bordered overflow-auto border-accent rounded-box flex items-center font-semibold text-lg gap-2 w-full" id="name" maxLength='62' minLength='10' />
+                <input onChange={handleChange} value={formData.name} type="text" placeholder="Title" className="input input-bordered overflow-auto border-accent rounded-box flex items-center font-semibold text-lg gap-2 w-full" id="name" />
                 <textarea onChange={handleChange} value={formData.description} type="text" placeholder="Description" className="textarea textarea-bordered overflow-auto border-accent rounded-box flex items-center font-semibold text-lg gap-2 w-full" id="description" />
                 <input onChange={handleChange} value={formData.address} type="text" placeholder="Address" className="input input-bordered overflow-auto border-accent rounded-box flex items-center font-semibold text-lg gap-2 w-full" id="address" />
                 <div className="flex gap-6 flex-wrap">

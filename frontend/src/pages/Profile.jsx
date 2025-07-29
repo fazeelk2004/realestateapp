@@ -6,6 +6,7 @@ import api from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal.jsx";
+import ConfirmDeleteListingModal from "../components/ConfirmDeleteListingModal.jsx";
 import ConfirmLogoutModal from "../components/ConfirmLogoutModal.jsx";
 import { ListingCard } from "../components/ListingCard.jsx";
 import ListingsCarousel from "../components/ListingsCarousel.jsx";
@@ -18,6 +19,8 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [selectedListing, setSelectedListing] = useState(null);
+
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
@@ -54,6 +57,24 @@ const Profile = () => {
       dispatch(logoutUserFailure(error.message))
     }
   }
+
+  const handleDeleteListing = async (e) => {
+    e.preventDefault();
+    if (!selectedListing) return;
+    try {
+      setShowModalDelete(false);
+      const res = await api.delete(`/listing/delete/${selectedListing._id}`);
+      const data = res.data;
+      if (data.success === false) {
+        toast.error(data.message);
+        return;
+      }
+      setListings(listings => listings.filter(l => l._id !== selectedListing._id));
+      toast.success("Successfully Deleted The Listing!");
+    } catch (error) {
+      toast.error("Error Deleting Listing! Please Try Again Later.");
+    }
+  };
 
    useEffect(() => {
     const fetchListings = async () => {
@@ -187,7 +208,7 @@ const Profile = () => {
                 </Link>
               </div>
             ) : (
-              <ListingsCarousel listings={listings} />
+              <ListingsCarousel listings={listings} setListings={setListings} onDeleteClick={listing => { setSelectedListing(listing); setShowModalDelete(true); }}/>
             )}
           </div>
           {listings.length > 0 && (
@@ -202,7 +223,12 @@ const Profile = () => {
           <ConfirmDeleteModal
             open={showModalDelete}
             onCancel={() => setShowModalDelete(false)}
-            onDelete={e => handleDelete(e)}
+            onDelete={handleDeleteListing}
+          />
+          <ConfirmDeleteListingModal
+            open={showModalDelete}
+            onCancel={() => setShowModalDelete(false)}
+            onDelete={handleDeleteListing}
           />
           <ConfirmLogoutModal
             open={showModalLogout}

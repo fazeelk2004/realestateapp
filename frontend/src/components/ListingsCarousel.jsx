@@ -9,7 +9,7 @@ function chunkArray(array, size) {
   return result;
 }
 
-const ListingsCarousel = ({ listings }) => {
+const ListingsCarousel = ({ listings, setListings, onDeleteClick }) => {
   const [chunkSize, setChunkSize] = useState(1);
   const [activeSlide, setActiveSlide] = useState(1);
 
@@ -68,7 +68,7 @@ const ListingsCarousel = ({ listings }) => {
                       : 'flex-1 min-w-0 max-w-xs'
                   }
                 >
-                  <ListingCard listing={listing} />
+                  <ListingCard listing={listing} onDeleteClick={onDeleteClick} setListings={setListings}/>
                 </div>
               ))}
             </div>
