@@ -10,6 +10,7 @@ import {PrivateProfileRoute, PrivateSignInUpRoute} from './components/PrivateRou
 import ResetPassword from './pages/ResetPassword';
 import EditProfile from './pages/EditProfile';
 import CreateListing from './pages/CreateListing';
+import EditListing from './pages/EditListing';
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/profile/edit" element={<EditProfile />} />
             <Route path="/create-listing" element={<CreateListing />} />
+            <Route path="/edit-listing/:listingId" element={<EditListing />} />
           </Route>
         </Routes>
       </BrowserRouter>

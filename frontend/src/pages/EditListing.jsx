@@ -1,21 +1,21 @@
 /* eslint-disable no-unused-vars */
-import { BadgePlus, Trash } from "lucide-react";
+import { PenBox, Trash } from "lucide-react";
 import { useState, useEffect } from "react";
-import bannerListing from "../assets/banner-listing.png";
 import {getStorage, ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage'
 import { app } from '../firebase'
 import { toast } from "react-hot-toast";
 import api from "../lib/axios";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
-const CreateListing = () => {
+const EditListing = () => {
 
   const {currentUser} = useSelector(state => state.user)
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [imageUploadError, setImageUploadError] = useState(false);
   const navigate = useNavigate();
+  const params = useParams();
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: '',
@@ -32,8 +32,21 @@ const CreateListing = () => {
   });
   const [files, setFiles] = useState([]);
   const [errorSaving, setErrorSaving] = useState(false);
-  console.log(formData);
   
+  useEffect(() => {
+    const fetchListing = async () => {
+      const listingId = params.listingId;
+      const res = await api.get(`/listing/get/${listingId}`)
+      const data = res.data;
+      if (data.success === false){
+        console.log(data.message);
+        return
+      }
+      setFormData(data);
+    }
+    fetchListing();
+  }, [])
+
   useEffect(() => {
     if (imageUploadError) {
       toast.error(imageUploadError);
@@ -174,7 +187,7 @@ const CreateListing = () => {
     try {
       setLoading(true);
       setErrorSaving(false);
-      const res = await api.post("/listing/create", {
+      const res = await api.post(`/listing/update/${params.listingId}`, {
         imageUrls: formData.imageUrls,
         name: formData.name,
         description: formData.description,
@@ -210,12 +223,9 @@ const CreateListing = () => {
             <div className="flex items-center gap-2 p-4">
               <div className="grow">
                 <div className="flex items-center gap-2 text-sm font-medium justify-between">
-                  <span className="flex flex-col gap-4">
-                      <img src={bannerListing} alt="" className="hidden lg:inline" /> 
-                    <span className="flex items-center justify-center gap-2 lg:hidden mx-6">  
-                      <BadgePlus className="h-6 w-6" />
-                      <h1 className="text-base-content text-3xl font-extrabold ">CREATE LISTING</h1>
-                    </span>
+                  <span className="flex items-center justify-center gap-2 mx-6">  
+                    <PenBox className="h-6 w-6" />
+                    <h1 className="text-base-content text-3xl font-extrabold ">UPDATE LISTING</h1>
                   </span>
                 </div>
               </div>
@@ -296,7 +306,7 @@ const CreateListing = () => {
                 }
                 </div>
                 <button className="btn btn-accent rounded-lg uppercase hover:shadow-lg">
-                  {loading ? <span className="loading loading-infinity loading-lg text-white"></span> : <span>CREATE LISTING</span>}
+                  {loading ? <span className="loading loading-infinity loading-lg text-white"></span> : <span>UPDATE LISTING</span>}
                 </button>
               </div>
             </form>
@@ -307,4 +317,4 @@ const CreateListing = () => {
   )
 }
 
-export default CreateListing
+export default EditListing

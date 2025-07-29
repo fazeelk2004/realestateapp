@@ -6,7 +6,7 @@ export const ListingCard = ({ listing, onDeleteClick }) => {
 
   const handleEdit = (e) => {
     e.preventDefault();
-    navigate(`/listing/${listing._id}/edit`);
+    navigate(`/edit-listing/${listing._id}`);
   };
 
   return (
