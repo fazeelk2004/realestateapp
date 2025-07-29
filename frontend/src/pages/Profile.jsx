@@ -8,7 +8,6 @@ import { useState, useEffect } from "react";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal.jsx";
 import ConfirmDeleteListingModal from "../components/ConfirmDeleteListingModal.jsx";
 import ConfirmLogoutModal from "../components/ConfirmLogoutModal.jsx";
-import { ListingCard } from "../components/ListingCard.jsx";
 import ListingsCarousel from "../components/ListingsCarousel.jsx";
 
 const Profile = () => {
