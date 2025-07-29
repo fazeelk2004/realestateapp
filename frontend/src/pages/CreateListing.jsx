@@ -142,6 +142,38 @@ const CreateListing = () => {
       toast.error("Please Give A Address For The Listing!")
       return;
     }
+    if (formData.discountPrice >= formData.regularPrice){
+      toast.error("Discounted Price Cannot Be Greater Than Regular Price!");
+      return;
+    }
+    if (formData.imageUrls.length < 1){
+      toast.error("Please Upload At Least One Image!");
+      return;
+    }
+    if (formData.discountPrice < 10){
+      toast.error("Discounted Price Cannot Be Less Than $10!");
+      return;
+    }
+    if (formData.regularPrice < 50){
+      toast.error("Regular Price Cannot Be Less Than $50!");
+      return;
+    }
+    if (formData.bedrooms < 1 || formData.bedrooms > 10){
+      toast.error("Please Enter A Valid Number Of Bedrooms!");
+      return;
+    }
+    if (formData.bathrooms < 1 || formData.bathrooms > 10){
+      toast.error("Please Enter A Valid Number Of Bathrooms!");
+      return;
+    }
+    if (formData.name.length < 10 || formData.name.length > 62){
+      toast.error("Please Enter A Valid Title!");
+      return;
+    }
+    if (formData.description.length < 10 || formData.description.length > 1000){
+      toast.error("Please Enter A Valid Description!");
+      return;
+    }
     try {
       setLoading(true);
       setErrorSaving(false);
@@ -235,13 +267,16 @@ const CreateListing = () => {
                       <span className="text-xs text-gray-500">($ / Month)</span>
                     </div>
                   </label>
-                  <label className="items-center flex gap-2">
-                    <input onChange={handleChange} value={formData.discountPrice} type="number" id="discountPrice" min='10' required className="input input-bordered border-accent font-bold w-50" />
-                    <div className="flex flex-col items-center">
-                      <span className="label-text">Discounted Price</span>
-                      <span className="text-xs text-gray-500">($ / Month)</span>
-                    </div>
-                  </label>
+                  {formData.offer === true && (
+                    <label className="items-center flex gap-2">
+                      <input onChange={handleChange} value={formData.discountPrice} type="number" id="discountPrice" min='10' required className="input input-bordered border-accent font-bold w-50" />
+                      <div className="flex flex-col items-center">
+                        <span className="label-text">Discounted Price</span>
+                        <span className="text-xs text-gray-500">($ / Month)</span>
+                      </div>
+                    </label>
+                  )}
+                  
                 </div>
               </div>
               <div className="flex flex-col flex-1 gap-6">

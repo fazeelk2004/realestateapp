@@ -60,7 +60,6 @@ const Profile = () => {
       try {
         setLoading(true)
         const res = await api.get(`/user/listings/${currentUser._id}`);
-        console.log(res.data);
         setListings(res.data);
       } catch (error) {
         console.error("Listings Fetch Error:", error.response?.data || error.message);
@@ -163,7 +162,8 @@ const Profile = () => {
                 <span className="ml-2">Password Reset</span>
               </Link>
             </div>
-            <div className="col-span-12 sm:col-span-12 md:col-span-2 md:col-start-11 mb-4 flex flex-col items-center">
+            {/* Delete Account */}
+            <div className="col-span-12 sm:col-span-12 md:col-span-3 md:col-start-10 mb-4 flex flex-col items-center">
               <button onClick={() => setShowModalDelete(true)} className="btn btn-error hover:bg-[#831c1c] hover:border-[#831c1c] text-white btn-md w-full flex justify-center items-center gap-2">
                 <Trash className="h-5 w-5" />
                 <span className="ml-2">Delete Account</span>
@@ -178,16 +178,26 @@ const Profile = () => {
           
           <div className="flex flex-col items-center sm:flex-row sm:items-center gap-5">
             {loading && <span className="loading loading-infinity loading-lg text-white"></span>}
-            {listings.length > 0 && (
+            {listings.length <= 0 ? (
+              <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4 px-5">
+                <span className="text-center text-base-content/70 font-bold text-lg">You have no listings!</span>
+                <Link to="/create-listing" className="btn btn-primary btn-sm sm:btn-md">
+                  <BadgePlus className="h-5 w-5" />
+                  <span className="ml-2">Create Listing</span>
+                </Link>
+              </div>
+            ) : (
               <ListingsCarousel listings={listings} />
             )}
           </div>
-          <div className="flex justify-center mt-6">
-            <Link to="/create-listing" className="btn btn-primary btn-sm sm:btn-md">
-              <BadgePlus className="h-5 w-5" />
-              <span className="ml-2">Create Listing</span>
-            </Link>
-          </div>
+          {listings.length > 0 && (
+            <div className="flex justify-center mt-6">
+              <Link to="/create-listing" className="btn btn-primary btn-sm sm:btn-md">
+                <BadgePlus className="h-5 w-5" />
+                <span className="ml-2">Create Listing</span>
+              </Link>
+            </div>
+          )}
 
           <ConfirmDeleteModal
             open={showModalDelete}
