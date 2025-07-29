@@ -21,7 +21,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [selectedListing, setSelectedListing] = useState(null);
 
-  const handleDelete = async (e) => {
+  const handleDeleteUser = async (e) => {
     e.preventDefault();
     try {
       setShowModalDelete(false)
@@ -73,6 +73,8 @@ const Profile = () => {
       toast.success("Successfully Deleted The Listing!");
     } catch (error) {
       toast.error("Error Deleting Listing! Please Try Again Later.");
+      console.log(error);
+      
     }
   };
 
@@ -223,7 +225,7 @@ const Profile = () => {
           <ConfirmDeleteModal
             open={showModalDelete}
             onCancel={() => setShowModalDelete(false)}
-            onDelete={handleDeleteListing}
+            onDelete={handleDeleteUser}
           />
           <ConfirmDeleteListingModal
             open={showModalDelete}
