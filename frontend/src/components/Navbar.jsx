@@ -95,9 +95,8 @@ const Navbar = () => {
                 tabIndex={0}
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                 <li>
-                  <Link to="/profile" className="justify-between">
-                    Profile
-                  </Link>
+                  <Link to="/profile" className="justify-between">Profile</Link>
+                  <Link to="/create-listing" className="justify-between">Create Listing</Link>
                 </li>
                 <li><a onClick={() => setShowModal(true)}>Logout</a></li>
               </ul>
