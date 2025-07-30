@@ -273,7 +273,7 @@ const EditListing = () => {
                     <input onChange={handleChange} value={formData.regularPrice} type="number" id="regularPrice" min='50' required className="input input-bordered border-accent font-bold w-50" />
                     <div className="flex flex-col items-center">
                       <span className="label-text">Regular Price</span>
-                      <span className="text-xs text-gray-500">($ / Month)</span>
+                      {formData.type === 'rent' && <span className="text-xs text-gray-500">($ / Month)</span>}
                     </div>
                   </label>
                   {formData.offer === true && (
@@ -281,7 +281,7 @@ const EditListing = () => {
                       <input onChange={handleChange} value={formData.discountPrice} type="number" id="discountPrice" min='10' required className="input input-bordered border-accent font-bold w-50" />
                       <div className="flex flex-col items-center">
                         <span className="label-text">Discounted Price</span>
-                        <span className="text-xs text-gray-500">($ / Month)</span>
+                        {formData.type === 'rent' && <span className="text-xs text-gray-500">($ / Month)</span>}
                       </div>
                     </label>
                   )}

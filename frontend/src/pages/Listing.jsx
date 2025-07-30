@@ -8,9 +8,12 @@ import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css/bundle';
 import 'swiper/css/autoplay';
 import 'swiper/css/pagination';
+import { useSelector } from "react-redux";
+import { Link } from "react-router"
 
 const Listing = () => {
   SwiperCore.use([Pagination, Autoplay]);
+  const {currentUser} = useSelector((state) => state.user);
   const params = useParams();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -70,7 +73,7 @@ const Listing = () => {
           <div className='flex flex-col [@media(min-width:810px)]:flex-row justify-between items-center bg-base-200 p-2 px-5 rounded-xl mb-2 gap-3'>
             {listing.type === 'sale' ? (
               <button disabled className='btn disabled:bg-green-600 disabled:text-white w-40'>FOR SALE</button> ) : (
-              <button disabled className='btn disabled:bg-red-600 disabled:text-white'>FOR RENT</button>
+              <button disabled className='btn disabled:bg-red-600 disabled:text-white w-24'>FOR RENT</button>
             )}
             <div className='grid grid-cols-12 gap-6'>
               <span className='flex gap-3 font-bold col-span-6 [@media(min-width:450px)]:col-span-3 justify-center'><Bed className='w-6 h-6'/>{listing.bedrooms}</span>
@@ -78,7 +81,7 @@ const Listing = () => {
               <span className='flex gap-3 font-bold col-span-6 [@media(min-width:450px)]:col-span-3 justify-center'><Sofa className='w-6 h-6'/>{listing.furnished === true ? (<Check />):(<Cross />)}</span>
               <span className='flex gap-3 font-bold col-span-6 [@media(min-width:450px)]:col-span-3 justify-center'><ParkingSquare className='w-6 h-6'/>{listing.parking === true ? (<Check />):(<Cross />)}</span>
             </div>
-            <div className='flex flex-col text-white font-semibold items-end'>
+            <div className='flex flex-col text-white font-semibold items-center [@media(min-width:810px)]:items-end'>
               {listing.offer ? (
                 <>
                   <span className='text-xl'>
@@ -96,6 +99,11 @@ const Listing = () => {
             </div>
           </div>
           <p className='text-base-200 text-lg font-bold'>Description - <span className='font-normal'>{listing.description}</span></p>
+          <div className='flex justify-end my-4'>
+          {currentUser._id === listing.userRef && (
+            <Link to={`/edit-listing/${params.listingId}`} className='btn btn-success '>EDIT LISTING</Link>
+          )}
+          </div>
         </div>
       }
     </div>
