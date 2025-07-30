@@ -100,9 +100,9 @@ const Listing = () => {
           </div>
           <p className='text-base-200 text-lg font-bold'>Description - <span className='font-normal'>{listing.description}</span></p>
           <div className='flex justify-end my-4'>
-          {currentUser._id === listing.userRef && (
-            <Link to={`/edit-listing/${params.listingId}`} className='btn btn-success '>EDIT LISTING</Link>
-          )}
+          {currentUser._id !== listing.userRef ? (
+            <Link to={`/edit-listing/${params.listingId}`} className='btn btn-success w-full'>EDIT LISTING</Link>
+          ) : (<Link to={`/profile`} className='btn btn-primary bg-gray-600 border-gray-600 w-full'>CONTACT LANDLORD</Link>)}
           </div>
         </div>
       }
