@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { PenBox, Trash } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -208,7 +209,7 @@ const EditListing = () => {
         setErrorSaving(data.message);
       }
       toast.success("Successfully Created The Listing!");
-      navigate('/profile');
+      navigate(`/listing/${params.listingId}`);
     } catch (error) {
       setErrorSaving(error.message);
       setLoading(false);
