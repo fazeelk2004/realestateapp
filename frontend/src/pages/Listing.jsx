@@ -10,6 +10,7 @@ import 'swiper/css/autoplay';
 import 'swiper/css/pagination';
 import { useSelector } from "react-redux";
 import { Link } from "react-router"
+import ContactModal from '../components/ContactModal';
 
 const Listing = () => {
   SwiperCore.use([Pagination, Autoplay]);
@@ -18,6 +19,8 @@ const Listing = () => {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [owner, setOwner] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -33,6 +36,16 @@ const Listing = () => {
           return
         }
         setListing(data);
+        
+        const userRes = await api.get(`/user/${data.userRef}`);
+        const userData = userRes.data
+        if (userData.success === false){
+          console.log(userData.message);
+          setError(true);
+          setLoading(false);
+          return
+        }
+        setOwner(userData);
         setError(false);
         setLoading(false);
       } catch (error) {
@@ -99,13 +112,25 @@ const Listing = () => {
             </div>
           </div>
           <p className='text-base-200 text-lg font-bold'>Description - <span className='font-normal'>{listing.description}</span></p>
-          <div className='flex justify-end my-4'>
-          {currentUser._id !== listing.userRef ? (
-            <Link to={`/edit-listing/${params.listingId}`} className='btn btn-success w-full'>EDIT LISTING</Link>
-          ) : (<Link to={`/profile`} className='btn btn-primary bg-gray-600 border-gray-600 w-full'>CONTACT LANDLORD</Link>)}
+          <div className='flex justify-between my-4 items-center'>
+            {owner && (
+              <div className=" flex rounded-lg  text-base-100 items-center">
+                <h2 className="text-xl font-bold">Listed By: <span className='font-semibold'>{owner.username}</span></h2>
+              </div>
+            )}
+            {currentUser && currentUser._id === listing.userRef ? (
+              <Link to={`/edit-listing/${params.listingId}`} className='btn btn-success'>EDIT LISTING</Link>
+            ) : (<span className='btn btn-primary bg-gray-600 border-gray-600' onClick={() => setShowModal(true)}>CONTACT LANDLORD</span>
+            )}
           </div>
         </div>
       }
+      <ContactModal
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        landlord={owner}
+        listingTitle={listing?.name}
+      />
     </div>
   )
 }
