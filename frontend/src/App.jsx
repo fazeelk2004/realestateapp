@@ -12,6 +12,7 @@ import EditProfile from './pages/EditProfile';
 import CreateListing from './pages/CreateListing';
 import EditListing from './pages/EditListing';
 import Listing from './pages/Listing';
+import Search from './pages/Search';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About/>} />
           <Route path="/listing/:listingId" element={<Listing />} />
+          <Route path="/search" element={<Search />} />
           <Route element={<PrivateSignInUpRoute />}>
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
