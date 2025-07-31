@@ -30,6 +30,14 @@ const Navbar = () => {
     setDropdownOpen2(false);
   }, [location]);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get('searchTerm');
+    if(searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, []);
+
   const handleLogout = async () => {
     try {
       setShowModal(false)
@@ -48,13 +56,11 @@ const Navbar = () => {
     }
   }
 
-  const handleSearch = (term, e) => {
-    e.preventDefault();
-    setShowSearchModal(false);
+  const handleSearch = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('searchTerm', term);
-    const searchQuery = urlParams.toString();
-    navigate(`/search?${searchQuery}`);
+    urlParams.set('searchTerm', searchTerm);
+    navigate(`/search?${urlParams.toString()}`);
+    setShowSearchModal(false);
   };
 
   return (
@@ -123,6 +129,7 @@ const Navbar = () => {
         open={showSearchModal}
         onCancel={() => setShowSearchModal(false)}
         onSearch={handleSearch}
+        searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
       />
     </div>

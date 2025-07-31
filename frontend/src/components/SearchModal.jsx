@@ -1,22 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
-
-const SearchModal = ({ open, onCancel, onSearch, setSearchTerm }) => {
-  const [input, setInput] = useState('');
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm');
-    if(searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl);
-    }
-  }, []);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    onSearch(input, e);
-  };
-
+const SearchModal = ({ open, onCancel, onSearch, searchTerm, setSearchTerm }) => {
   if (!open) return null;
 
   return (
@@ -28,11 +10,11 @@ const SearchModal = ({ open, onCancel, onSearch, setSearchTerm }) => {
           placeholder="Type to search..."
           className="input input-bordered w-full mb-4"
           autoFocus
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <div className="flex justify-end gap-2">
-          <button onClick={(e) => handleSearch(e)} className="btn btn-primary">Search</button>
+          <button onClick={onSearch} className="btn btn-primary">Search</button>
           <button onClick={onCancel} className="btn btn-error">Close</button>
         </div>
       </div>
