@@ -3,7 +3,7 @@ import { Bath, Bed, Check, MapPin, ParkingSquare, Sofa, X } from 'lucide-react';
 
 export default function ListingItem({ listing }) {
   return (
-    <div className='card bg-base-100/90 mt-2 overflow-hidden rounded-lg w-full sm:w-[400px] h-full p-2 hover:scale-105 transition-scale duration-300'>
+    <div className='card bg-base-100/90 mt-2 overflow-hidden rounded-lg w-full  h-full p-2 hover:scale-105 transition-scale duration-300'>
       <Link to={`/listing/${listing._id}`}>
         <img src={listing.imageUrls[0] ||'https://53.fs1.hubspotusercontent-na1.net/hub/53/hubfs/Sales_Blog/real-estate-business-compressor.jpg?width=595&height=400&name=real-estate-business-compressor.jpg'}
           alt='listing cover'
@@ -23,12 +23,12 @@ export default function ListingItem({ listing }) {
             {listing.description}
           </p>
           {listing.offer === true ? (
-            <div className='flex items-center gap-2 justify-between'>
-                <span className='text-sm text-base-content/40 overflow-hidden text-ellipsis whitespace-nowrap font-bold'>Original Price: <span className='line-through'> ${listing.regularPrice}</span> </span>
-                <span className='text-sm text-base-content/100 overflow-hidden text-ellipsis whitespace-nowrap font-bold'>Discounted Price: ${listing.regularPrice - listing.discountPrice}</span>
+            <div className='flex flex-col items-start gap-2 justify-start'>
+                <span className='text-sm text-base-content/40 overflow-hidden text-ellipsis whitespace-nowrap font-bold'>Original: <span className='line-through'> ${listing.regularPrice} {listing.type === 'rent' && <span className=""> / Month</span>}</span> </span>
+                <span className='text-sm text-base-content/100 overflow-hidden text-ellipsis whitespace-nowrap font-bold'>Discounted: ${listing.regularPrice - listing.discountPrice} {listing.type === 'rent' && <span className=""> / Month</span>}</span>
             </div>
             ) : (
-            <span className='text-sm text-base-content/100 overflow-hidden text-ellipsis text-end whitespace-nowrap font-bold'>Price: ${listing.regularPrice}</span>
+            <span className='text-sm text-base-content/100 overflow-hidden text-ellipsis text-end whitespace-nowrap font-bold'>Price: ${listing.regularPrice} {listing.type === 'rent' && <span className=""> / Month</span>}</span>
             )}
           <div className='text-white mt-3 flex gap-7'>
             <div className='font-bold text-xs'>

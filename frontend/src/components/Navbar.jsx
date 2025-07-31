@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Menu, Search } from 'lucide-react';
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
