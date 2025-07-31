@@ -6,6 +6,7 @@ import ConfirmLogoutModal from './ConfirmLogoutModal.jsx'
 import api from '../lib/axios.js';
 import { logoutUserFailure, logoutUserStart, logoutUserSuccess } from "../redux/user/userSlice.js";
 import toast from 'react-hot-toast';
+import SearchModal from './SearchModal.jsx';
 
 
 const Navbar = () => {
@@ -13,7 +14,9 @@ const Navbar = () => {
   const {currentUser} = useSelector((state) => state.user);
   const [dropdownOpen1, setDropdownOpen1] = useState(false);
   const [dropdownOpen2, setDropdownOpen2] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,11 +29,6 @@ const Navbar = () => {
   useEffect(() => {
     setDropdownOpen2(false);
   }, [location]);
-
-  // Function to open modal
-  const openSearchModal = () => {
-    document.getElementById('my_modal_1').showModal();
-  };
 
   const handleLogout = async () => {
     try {
@@ -50,6 +48,15 @@ const Navbar = () => {
     }
   }
 
+  const handleSearch = (term, e) => {
+    e.preventDefault();
+    setShowSearchModal(false);
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('searchTerm', term);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
   return (
     <div className="navbar bg-base-200 sticky top-0 z-50">
       <div className="navbar-start">
@@ -64,7 +71,7 @@ const Navbar = () => {
               <li><Link to='/'>Home</Link></li>
               <li><Link to='/about'>About</Link></li>
               <li className='inline sm:hidden'>
-                <span onClick={openSearchModal} style={{ cursor: 'pointer' }}>Search</span>
+                <span onClick={() => setShowSearchModal(true)} style={{ cursor: 'pointer' }}>Search</span>
               </li>
             </ul>
           )}
@@ -78,7 +85,7 @@ const Navbar = () => {
       <div className="navbar-end flex items-center gap-2">
         {location.pathname !== "/signin" &&
           <div className="relative hidden sm:block">
-            <button className="btn btn-ghost" onClick={openSearchModal}>
+            <button className="btn btn-ghost" onClick={() => setShowSearchModal(true)}>
               <Search className="h-5 w-5" />
             </button>
           </div>
@@ -112,22 +119,12 @@ const Navbar = () => {
       />
 
       {/* Modal */}
-      <dialog id="my_modal_1" className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Search</h3>
-          <input
-            type="text"
-            placeholder="Type to search..."
-            className="input input-bordered w-full my-4"
-            autoFocus
-          />
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn">Close</button>
-            </form>
-          </div>
-        </div>
-      </dialog>
+      <SearchModal
+        open={showSearchModal}
+        onCancel={() => setShowSearchModal(false)}
+        onSearch={handleSearch}
+        setSearchTerm={setSearchTerm}
+      />
     </div>
   )
 }
