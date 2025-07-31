@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 import api from "../lib/axios";
+import ListingItem from "../components/ListingItem.jsx";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ const Search = () => {
     };
 
     fetchListings();
-    
+
   }, [location.search]);
 
   const handleSubmit = (e) => {
@@ -94,7 +95,7 @@ const Search = () => {
 
   return (
     <div className='grid grid-cols-12 gap-3'>
-      <div className="col-span-12 [@media(min-width:1185px)]:col-span-3 w-full px-4 mt-10 flex justify-center">
+      <div className="col-span-12 [@media(min-width:1185px)]:col-span-3 w-full [@media(min-width:1185px)]:h-[400px] px-4 mt-10 flex justify-center">
         <div className="card bg-base-100/90 border border-base-300 w-full max-w-xl p-4 rounded-lg shadow-md">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col [@media(min-width:350px)]:flex-row items-start [@media(min-width:350px)]:items-center gap-2">
@@ -155,8 +156,30 @@ const Search = () => {
           </form>
         </div>
       </div>
-      <div className="col-span-12 [@media(min-width:1058px)]:col-span-9 mt-5 justify-center">
+      <div className="col-span-12 [@media(min-width:1185px)]:col-span-9 mt-5">
         <h1 className="text-3xl text-base-200 font-bold text-center">LISTING RESULT</h1>
+
+        {/* Message + Loading */}
+        <div className="flex justify-center px-4">
+          {!loading && listings.length === 0 && (
+            <p className="text-xl text-base-200 font-bold text-center">NO LISTING FOUND!</p>
+          )}
+          {loading && (
+            <span className="loading loading-circle w-40 text-accent"></span>
+          )}
+        </div>
+
+        {/* Flexbox listings wrapper */}
+        <div className="flex flex-wrap justify-center gap-10 px-4 mt-4">
+          {!loading && listings && listings.map((listing) => (
+            <div
+              key={listing._id}
+              className="flex-shrink-0 basis-full sm:basis-[45%] xl:basis-[30%] max-w-sm"
+            >
+              <ListingItem listing={listing} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

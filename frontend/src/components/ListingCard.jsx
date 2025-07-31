@@ -10,7 +10,7 @@ export const ListingCard = ({ listing, onDeleteClick }) => {
   };
 
   return (
-    <Link to={`/listing/${listing._id}`} className='card bg-primary p-4 hover:border-[#00c3ff] hover:scale-105 transition-all duration-200 border-t-4 border-solid border-[#8FA0B8] h-96 overflow-hidden'>
+    <Link to={`/listing/${listing._id}`} className='card bg-primary p-4 hover:border-[#00c3ff] hover:scale-105 transition-scale duration-300 border-t-4 border-solid border-[#8FA0B8] h-96 overflow-hidden'>
       <div className="h-full w-full overflow-hidden">
         <img src={listing.imageUrls[0]} alt={listing.name} className='w-full h-full rounded-t-lg object-cover' />
       </div>
