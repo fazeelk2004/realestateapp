@@ -76,6 +76,7 @@ const Navbar = () => {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 shadow">
               <li><Link to='/'>Home</Link></li>
               <li><Link to='/about'>About</Link></li>
+              <li><Link to='/search'>All Listings</Link></li>
               <li className='inline sm:hidden'>
                 <span onClick={() => setShowSearchModal(true)} style={{ cursor: 'pointer' }}>Search</span>
               </li>

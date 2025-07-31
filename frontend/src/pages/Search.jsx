@@ -16,6 +16,8 @@ const Search = () => {
   })
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+
 
   const handleChange = (e) => {
       if(e.target.id === 'all' || e.target.id === 'rent' || e.target.id === 'sale') {
@@ -70,6 +72,9 @@ const Search = () => {
       const searchQuery = urlParams.toString();
       const res = await api.get(`/listing/get?${searchQuery}`);
       const data = res.data;
+      if(data.length > 8) {
+        setShowMore(true);
+      }
       setListings(data);
       setLoading(false);
     };
@@ -92,6 +97,19 @@ const Search = () => {
     navigate(`/search?${searchQuery}`);
   }
 
+  const onShowMoreClick = async () => {
+    const numberOfListings = listings.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(location.search)
+    urlParams.set('startIndex', startIndex)
+    const searchQuery = urlParams.toString();
+    const res = await api.get(`/listing/get?${searchQuery}`);
+    const data = res.data;
+    if (data.length < 9) {
+      setShowMore(false)
+    }
+    setListings([...listings, ...data]);
+  }
 
   return (
     <div className='grid grid-cols-12 gap-3'>
@@ -179,6 +197,16 @@ const Search = () => {
               <ListingItem listing={listing} />
             </div>
           ))}
+          
+        </div>
+        <div className="flex justify-center">
+          {showMore && (
+            <button className="btn btn-base-100 my-10" onClick={()=>{
+              onShowMoreClick()
+            }}>
+              Show More
+            </button>
+          )}
         </div>
       </div>
     </div>
