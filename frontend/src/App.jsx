@@ -25,7 +25,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About/>} />
-          <Route path="/listing/:listingId" element={<Listing />} />
           <Route path="/search" element={<Search />} />
           <Route element={<PrivateSignInUpRoute />}>
             <Route path="/signin" element={<SignIn />} />
@@ -34,6 +33,7 @@ export default function App() {
           <Route element={<PrivateProfileRoute />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/listing/:listingId" element={<Listing />} />
             <Route path="/profile/edit" element={<EditProfile />} />
             <Route path="/create-listing" element={<CreateListing />} />
             <Route path="/edit-listing/:listingId" element={<EditListing />} />

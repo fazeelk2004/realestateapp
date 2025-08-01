@@ -118,9 +118,21 @@ const Listing = () => {
                 <h2 className="text-xl font-bold">Listed By: <span className='font-semibold'>{owner.username}</span></h2>
               </div>
             )}
-            {currentUser && currentUser._id === listing.userRef ? (
-              <Link to={`/edit-listing/${params.listingId}`} className='btn btn-success'>EDIT LISTING</Link>
-            ) : (<span className='btn btn-primary bg-gray-600 border-gray-600' onClick={() => setShowModal(true)}>CONTACT LANDLORD</span>
+            {currentUser ? (
+              currentUser._id === listing.userRef ? (
+                <Link to={`/edit-listing/${params.listingId}`} className='btn btn-success'>
+                  EDIT LISTING
+                </Link>
+              ) : (
+                <span
+                  className='btn btn-primary bg-gray-600 border-gray-600'
+                  onClick={() => setShowModal(true)}
+                >
+                  CONTACT LANDLORD
+                </span>
+              )
+            ) : (
+              <Link to={"/signin"} className='btn btn-primary bg-gray-600 border-gray-600'>SIGN IN TO CONTACT LANDLORD</Link>
             )}
           </div>
         </div>
