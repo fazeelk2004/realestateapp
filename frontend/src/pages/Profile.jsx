@@ -13,6 +13,7 @@ import ListingsCarousel from "../components/ListingsCarousel.jsx";
 const Profile = () => {
   const {currentUser} = useSelector((state) => state.user);
   const [showModalDelete, setShowModalDelete] = useState(false);
+  const [showModalDeleteListing, setShowModalDeleteListing] = useState(false);
   const [showModalLogout, setShowModalLogout] = useState(false);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -209,7 +210,7 @@ const Profile = () => {
                 </Link>
               </div>
             ) : (
-              <ListingsCarousel listings={listings} setListings={setListings} onDeleteClick={listing => { setSelectedListing(listing); setShowModalDelete(true); }}/>
+              <ListingsCarousel listings={listings} setListings={setListings} onDeleteClick={listing => { setSelectedListing(listing); setShowModalDeleteListing(true); }}/>
             )}
           </div>
           {listings.length > 0 && (
@@ -227,8 +228,8 @@ const Profile = () => {
             onDelete={handleDeleteUser}
           />
           <ConfirmDeleteListingModal
-            open={showModalDelete}
-            onCancel={() => setShowModalDelete(false)}
+            open={showModalDeleteListing}
+            onCancel={() => setShowModalDeleteListing(false)}
             onDelete={handleDeleteListing}
           />
           <ConfirmLogoutModal
