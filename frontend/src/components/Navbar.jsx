@@ -87,7 +87,7 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-center">
-        <Link to="/" className="text-2xl font-bold hover:text-[#8e8e8e]">Nexa Living</Link>
+        <Link to="/" className="text-2xl font-bold hover:text-[#8e8e8e]">Noble Acres</Link>
       </div>
 
       <div className="navbar-end flex items-center gap-2">
